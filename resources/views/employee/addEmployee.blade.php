@@ -1,12 +1,12 @@
 @extends('layout.main')
 
-@section('wrapper')
-@section('content-wrapper')
-@section('breadcrumb')
+{{-- @section('breadcrumb')
     <ol class="breadcrumb border-0 m-0">
         <li class="breadcrumb-item active">Employee>AddEmployee</li>
     </ol>
-@endsection
+@endsection --}}
+@section('wrapper')
+@section('content-wrapper')
 @section('content')
     <div class="container mt-5">
         <div class="row mt-5">
@@ -48,6 +48,33 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Menangkap respon dari form submission menggunakan JavaScript
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+    
+            try {
+                const response = await fetch(this.getAttribute('action'), {
+                    method: 'POST',
+                    body: formData
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Ada kesalahan saat memproses form.');
+                }
+    
+                const jsonData = await response.json();
+    
+                // Menampilkan data JSON di halaman
+                document.getElementById('ocrResult').innerHTML = `<pre>${JSON.stringify(jsonData, null, 2)}</pre>`;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
 @endsection
 @endsection
 @endsection

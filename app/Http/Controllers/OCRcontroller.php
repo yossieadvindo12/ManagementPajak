@@ -27,10 +27,25 @@ try {
     $imagePath = $request->file('image')->store('images');
     $text = (new TesseractOCR(storage_path('app/' . $imagePath)))->run();
 
-    return response()->json(['text' => $text]);
+    $lines = explode("\n", $text);
+    $keyValuePairs = [];
+
+    foreach ($lines as $line) {
+        // Assuming key and value are separated by a colon
+        $pair = explode(':', $line, 2);
+        if (count($pair) == 2) {
+            $key = trim($pair[0]);
+            $value = trim($pair[1]);
+            $keyValuePairs[$key] = $value;
+        }
+    }
+    // dd($keyValuePairs);
+    // return $keyValuePairs;
+    return response()->json($keyValuePairs);
+    // return compact($keyValuePairs);
     // dd($text);
-    // Process the extracted text
-    // For example, you can return it or store it in a database
+    // return compact($keyValuePairs);
+
 } catch (\Exception $e) {
     // Handle any exceptions or errors
     echo "Error: " . $e->getMessage();
