@@ -8,37 +8,22 @@
 @section('wrapper')
 @section('content-wrapper')
 @section('content')
-    <div class="container mt-5">
-        <div class="row mt-5">
-            <div class="col-sm-8 mx-auto">
-                <div class="jumbotron">
-                    <h1 class="display-4">Read Text from Images</h1>
-                    <p class="lead">
+    <div class="container mt-2">
+        <h1>Add Employee</h1>
+        <div class="row col-sm-16 mx-auto">
+            <div class="card  mt-2 "style="width: 100%;">
+                <div class="container">
 
 
-                        <?php if ($_POST) : ?>
-                        <pre>
-                                    <?= $fileRead ?>
-                                </pre>
-                        <?php endif; ?>
-
-
-                    </p>
-                    <hr class="my-4">
-                </div>
-            </div>
-        </div>
-        <div class="row col-sm-8 mx-auto">
-            <div class="card mt-5">
-                <div class="card-body">
-
-
-                    <form id="ocrForm" action="/extract-text" method="post" enctype="multipart/form-data">
+                    <form id="ocrForm" class="d-flex justify-content-between" action="/extract-text" method="post"
+                        enctype="multipart/form-data">
                         @csrf
-                        <input type="file" id="image" name="image">
-                        <button type="submit">Upload & OCR</button>
+                        <div class="form-group mt-3">
+                            <input type="file" id="image" name="image">
+                        </div>
+                        <button class="btn btn-success mt-3" type="submit" name="submit">Upload & OCR</button>
                     </form>
-                    <div id="ocrResult"></div>
+                    <div class=" mt-5" id="ocrResult"></div>
 
 
 
@@ -53,23 +38,38 @@
         // Menangkap respon dari form submission menggunakan JavaScript
         document.querySelector('form').addEventListener('submit', async function(event) {
             event.preventDefault();
-            
+
             const formData = new FormData(this);
-    
+
             try {
                 const response = await fetch(this.getAttribute('action'), {
                     method: 'POST',
                     body: formData
                 });
-    
+
                 if (!response.ok) {
                     throw new Error('Ada kesalahan saat memproses form.');
                 }
-    
+
                 const jsonData = await response.json();
-    
+
+                function generateHTML(data) {
+                    var html = '<form>';
+                    // html +='<input type="text" value="'+data[1]+'" /><br>';
+                    for (var key in data) {
+                        // if (key.toLowerCase().includes('nik')) {
+                            html += '<li><strong>' + key + ':</strong> ' + data[key] + '</li>';
+                        // }
+                    }
+                    html += '</form>';
+                    return html;
+                }
+
+                // Displaying the generated HTML
+                document.getElementById('ocrResult').innerHTML = generateHTML(jsonData);
                 // Menampilkan data JSON di halaman
-                document.getElementById('ocrResult').innerHTML = `<pre>${JSON.stringify(jsonData, null, 2)}</pre>`;
+                // document.getElementById('ocrResult').innerHTML =
+                //     `<pre>${JSON.stringify(jsonData, null, 2)}</pre>`;
             } catch (error) {
                 console.error('Error:', error);
             }
