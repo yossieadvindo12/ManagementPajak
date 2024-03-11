@@ -12,14 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('Employee', function (Blueprint $table) {
-            $table->string('nik')->unique();
+            $table->unsignedBigInteger('nik')->unique();
             $table->string('nama');
-            $table->string('tempat/tanggal_lahir');
+            $table->string('tempat');
+            $table->date('tanggal_lahir');
             $table->enum('jenis_kelamin', ['laki-laki', 'perempuan']);
             $table->string('alamat');
             $table->boolean('is_active');
             $table->string('status_PTKP');
             $table->enum('kode_karyawan', ['karyawan', 'tukang']);
+            $table->integer('id_company')->references('id_company')->on('company')->restrictOnDelete();
             $table->timestamp('created_at')->nullable();
         });
         

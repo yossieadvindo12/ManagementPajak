@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OCRcontroller;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RegisterController;
 
 /*
@@ -32,8 +34,17 @@ Route::post('/passwordResetAct', [LoginController::class, 'forgot_password_act']
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/index',[HomeController::class,'index'])->name('home');
-    Route::get('/addEmployee',[HomeController::class,'addEmployee'])->name('addEmployee');
+    Route::get('/Employee',[EmployeeController::class,'index'])->name('Employee');
+    Route::get('/addEmployee',[EmployeeController::class,'create'])->name('addEmployee');
+    Route::post('/extract-text', [OCRcontroller::class,'extractText']);
+    Route::post('/storeEmployee', [EmployeeController::class,'store']);  
+
+    Route::get('/company', [CompanyController::class,'index'])->name('company.view');
+    Route::get('/addCompany', [CompanyController::class,'addCompany']);
+    Route::post('/storeCompany', [CompanyController::class,'store']);    
+    Route::get('/company/{item}/edit', [CompanyController::class,'edit'])->name('company.edit');
+    Route::put('/company/{company}',  [CompanyController::class,'update'])->name('company.update');
+    Route::delete('company/{id_company}', [CompanyController::class,'destroy'] )->name('company.destroy');
 });
 
-Route::post('/extract-text', [OCRcontroller::class,'extractText']);
 

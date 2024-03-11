@@ -53,26 +53,157 @@
 
                 const jsonData = await response.json();
 
-                function generateHTML(data) {
-                    var html = '<form>';
+                function generateDataKTP(data) {
+                    const dataktp = data.dataKTP;
+                    const pktpoptions = data.ptkpOptions;
+                    const companyOptions = data.companyOptions;
+                    console.log(dataktp);
+                    var html = '<form class="user" action="/storeEmployee" method="post">';
+                    html += '@csrf'
                     // html +='<input type="text" value="'+data[1]+'" /><br>';
-                    for (var key in data) {
-                        // if (key.toLowerCase().includes('nik')) {
-                            html += '<li><strong>' + key + ':</strong> ' + data[key] + '</li>';
-                        // }
+                    var nik, nama, tempat, tanggal_lahir, alamat;
+                    for (var key in dataktp) {
+                        if (key.toLowerCase().includes('nik')) {
+                            nik = dataktp[key];
+                        }
+                        if (key.toLowerCase().includes('nama')) {
+                            nama = dataktp[key];
+                        }
+                        if (key.toLowerCase().includes('tempat')) {
+                            tempat = dataktp[key].split(',')[0];
+                        }
+                        if (key.toLowerCase().includes('tgl lahir')) {
+                            var inputString = dataktp[key].split(',')[1].trim();
+
+                            // Split the string into day, month, and year
+                            var dateComponents = inputString.split('-');
+
+                            // Rearrange the components to form the yyyy-MM-dd format
+                            tanggal_lahir = dateComponents[2] + "-" + dateComponents[1] + "-" +
+                                dateComponents[0];
+                        }
+                        if (key.toLowerCase().includes('alamat')) {
+                            alamat = dataktp[key];
+                        }
+                        console.log(tanggal_lahir);
                     }
+                    if (nik) {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>NIK</strong></label>';
+                        html += '<input type="text" name="nik" value="' + nik +
+                            '" class="form-control form-control-user" />';
+                        html += '</div>';
+                        html += '@error('+"nik"+')<small>{{ $message }}</small>@enderror'
+                    } else {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>NIK</strong></label>';
+                        html +=
+                            '<input type="text" name="nik" value="{{ old('nik') }}" class="form-control form-control-user" placeholder="NIK"  />';
+                        html += '</div>';
+                        html += '@error('+"nik"+')<small>{{ $message }}</small>@enderror'
+                    }
+                    if (nama) {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>Nama</strong></label>';
+                        html += '<input type="text" name="nama" value="' + nama +
+                            '" class="form-control form-control-user" />';
+                        html += '</div>';
+                        html += '@error('+"nama"+')<small>{{ $message }}</small>@enderror';
+                    } else {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>Nama</strong></label>';
+                        html +=
+                            '<input type="text" name="nama" value="{{ old('nama') }}" class="form-control form-control-user" placeholder="NAMA"  />';
+                        html += '</div>';
+                        html += '@error('+"nama"+')<small>{{ $message }}</small>@enderror';
+                    }
+                    if (tempat) {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>Tempat Lahir</strong></label>';
+                        html += '<input type="text"  name="tempat" value="' + tempat +
+                            '" class="form-control form-control-user" />';
+                        html += '</div>';
+                        html += '@error('+"tempat"+')<small>{{ $message }}</small>@enderror';
+                    } else {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>Tempat Lahir</strong></label>';
+                        html +=
+                            '<input type="text" name="tempat" value="{{ old('tempat') }}" class="form-control form-control-user" placeholder="Tempat Lahir"  />';
+                        html += '</div>';
+                        html += '@error('+"tempat"+')<small>{{ $message }}</small>@enderror';
+                    }
+                    if (tanggal_lahir) {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>Tgl Lahir</strong></label>';
+                        html += '<input type="date"  name="tanggal_lahir" value="' + tanggal_lahir +
+                            '" class="form-control form-control-user" />';
+                        html += '</div>';
+                        html += '@error('+"tanggal_lahir"+')<small>{{ $message }}</small>@enderror';
+                    }else {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>Tgl Lahir</strong></label>';
+                        html +=
+                            '<input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" class="form-control form-control-user" placeholder="Tgl Lahir"  />';
+                        html += '</div>';
+                        html += '@error('+"tanggal_lahir"+')<small>{{ $message }}</small>@enderror';
+                    }
+                    if (alamat) {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>Alamat</strong></label>';
+                        html += '<input type="text"  name="alamat" value="' + alamat +
+                            '" class="form-control form-control-user" />';
+                        html += '</div>';
+                        html += '@error('+"alamat"+')<small>{{ $message }}</small>@enderror';
+                    }else {
+                        html += '<div class="form-group">';
+                        html += '<label><strong>Alamat</strong></label>';
+                        html +=
+                            '<input type="text" name="alamat" value="{{ old('alamat') }}" class="form-control form-control-user" placeholder="Alamat"  />';
+                        html += '</div>';
+                        html += '@error('+"alamat"+')<small>{{ $message }}</small>@enderror';
+                    }
+
+
+
+                    // jeniskelamin
+                    html += '<div class="form-group">';
+                    html += '<label><strong>Jenis Kelamin</strong></label>';
+                    html += '<select class="form-control" name = "jenis_kelamin" >';
+                    html += '<option value = "laki-laki" > LAKI - LAKI </option> ';
+                    html += '<option value = "perempuan" > PEREMPUAN </option> ';
+                    html += '</select>';
+                    html += '</div>';
+
+                    html += '<div class="form-group">';
+                    html += '<label><strong>Status Ptkp</strong></label>';
+                    html += '<select class="form-control" name = "status_ptkp" >';
+                    for (var key in pktpoptions) {
+                        html += '<option value = "' + key + '" > ' + key +
+                            '</option> ';
+                    }
+                    html += '</select>';
+                    html += '</div>';
+                    html += '<div class="form-group">';
+                    html += '<label><strong>Perusahaan</strong></label>';
+                    html += '<select class="form-control" name = "id_company" >';
+                    for (var key in companyOptions) {
+                        html += '<option value = "' + key + '" > ' + companyOptions[key] +
+                            '</option> ';
+                    }
+                    html += '</select>';
+                    html += '</div>';
+                    html += '<button type="submit" class="btn btn-primary btn-user btn-block">Tambah</button>';
                     html += '</form>';
                     return html;
                 }
 
                 // Displaying the generated HTML
-                document.getElementById('ocrResult').innerHTML = generateHTML(jsonData);
-                // Menampilkan data JSON di halaman
-                // document.getElementById('ocrResult').innerHTML =
-                //     `<pre>${JSON.stringify(jsonData, null, 2)}</pre>`;
+                document.getElementById('ocrResult').innerHTML = generateDataKTP(jsonData);
+
             } catch (error) {
                 console.error('Error:', error);
             }
+
         });
     </script>
 @endsection
