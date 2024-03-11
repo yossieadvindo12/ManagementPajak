@@ -25,4 +25,5 @@ class Employee extends Model
         'id_company'
     ];
     protected $table = 'employee';
+    public $timestamps = false;
 }

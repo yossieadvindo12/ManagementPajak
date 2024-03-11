@@ -16,6 +16,7 @@ class CompanyController extends Controller
         //
         $dataPerusahaan = Company::all();
         return view('company.Company',compact('dataPerusahaan'));
+        
     }
 
     public function addCompany()
