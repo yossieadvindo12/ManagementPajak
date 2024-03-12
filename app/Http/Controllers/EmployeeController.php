@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ptkp;
+use App\Models\Salary;
 use App\Models\Company;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -45,7 +46,8 @@ class EmployeeController extends Controller
             'jenis_kelamin' => 'string',
             'status_ptkp' => 'string',
             'kode_karyawan' => 'string',
-            'id_company' => 'integer'
+            'id_company' => 'integer',
+            'salary' => 'required|integer'
         ]);
 
         // dd($request->all());
@@ -63,10 +65,16 @@ class EmployeeController extends Controller
             'created_at' => DB::raw('NOW()')
            ]);
         
+        Salary::create([
+            'nik' => $request->nik,
+            'gaji_pokok' => $request->salary
+           ]);
+        
            return back()->with([
             'success' => 'Berhasil menambahkan data perusahaan.'
         ]);
     }
+
 
     /**
      * Display the specified resource.

@@ -117,6 +117,14 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label><strong>Gaji Pokok</strong></label>
+                            <input type="text" id="salary" name="salary" value=""
+                                class="form-control form-control-user" placeholder="gaji pokok" />
+                        </div>
+                        @error('salary')
+                            <small>{{ $message }}</small>
+                        @enderror
                         <button type="submit" class="btn btn-primary btn-user btn-block">Tambah</button>
                     </form>
                 </div>

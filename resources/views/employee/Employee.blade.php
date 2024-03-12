@@ -35,6 +35,7 @@
                         <td>{{ $item->jenis_kelamin }}</td>
                         <td>{{ $item->status_PTKP }}</td>
                         <td>{{ $item->kode_karyawan }}</td>
+                        <td>{{ $item->id_company}}</td>
                         {{-- <td>Pelukis</td> --}}
                         
                         <td>
