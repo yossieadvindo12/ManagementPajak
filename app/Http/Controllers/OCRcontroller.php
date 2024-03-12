@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ptkp;
+use App\Models\Company;
 use app\Services\OCRservice;
 use Illuminate\Http\Request;
 use thiagoalessio\TesseractOCR\TesseractOCR;
@@ -41,7 +43,11 @@ try {
     }
     // dd($keyValuePairs);
     // return $keyValuePairs;
-    return response()->json($keyValuePairs);
+    $ptkpOptions = Ptkp::pluck( 'besaran_ptkp','ptkp');
+    $companyOptions = Company::pluck('name_company','id_company');
+    // dd($ptkpOptions);
+    return response()
+    ->json(['dataKTP' =>$keyValuePairs, 'ptkpOptions'=>$ptkpOptions, 'companyOptions'=>$companyOptions]);
     // return compact($keyValuePairs);
     // dd($text);
     // return compact($keyValuePairs);

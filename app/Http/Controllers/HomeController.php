@@ -11,7 +11,5 @@ class HomeController extends Controller
         return view('index');
     }
 
-    public function addEmployee(){
-        return view('employee.addEmployee');
-    }
+
 }
