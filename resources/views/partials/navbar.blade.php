@@ -41,6 +41,13 @@
             </a>
 
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/Bpjs">
+                <i class="fas fa-fw fa fa-building"></i>
+                <span>BPJS</span>
+            </a>
+
+        </li>
 
     </div>
 
