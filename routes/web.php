@@ -34,10 +34,12 @@ Route::post('/passwordResetAct', [LoginController::class, 'forgot_password_act']
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/index',[HomeController::class,'index'])->name('home');
-    Route::get('/Employee',[EmployeeController::class,'index'])->name('Employee');
+    Route::get('/employee',[EmployeeController::class,'index'])->name('employee.view');
     Route::get('/addEmployee',[EmployeeController::class,'create'])->name('addEmployee');
     Route::post('/extract-text', [OCRcontroller::class,'extractText']);
-    Route::post('/storeEmployee', [EmployeeController::class,'store']);  
+    Route::post('/storeEmployee', [EmployeeController::class,'store']);
+    Route::get('/employee/{item}/edit', [EmployeeController::class,'edit'])->name('employee.edit');
+    Route::put('/employee/{nik}',  [EmployeeController::class,'update'])->name('employee.update');
 
     Route::get('/company', [CompanyController::class,'index'])->name('company.view');
     Route::get('/addCompany', [CompanyController::class,'addCompany']);
