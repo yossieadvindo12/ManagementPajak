@@ -27,7 +27,9 @@
                         </div>
                         <button class="btn btn-success mt-3" type="submit" name="submit">Upload & OCR</button>
                     </form>
+                    
                     <div class=" mt-5" id="ocrResult"></div>
+
                     <form id="formEmployee" class="user " action="/storeEmployee" method="post">
                         @csrf
                         <div class="form-group">
@@ -60,7 +62,7 @@
                         @enderror
 
                         <div class="form-group">
-                            <label><strong>Tgl Lahir</strong></label>
+                            <label><strong>Tanggal Lahir</strong></label>
                             <input type="date" id="tanggal_lahir" name="tanggal_lahir" value=""
                                 class="form-control form-control-user" placeholder="Tgl Lahir" />
                         </div>
@@ -79,9 +81,6 @@
                         @enderror
 
 
-
-
-
                         <div class="form-group">
                             <label><strong>Jenis Kelamin</strong></label>
                             <select class="form-control" name = "jenis_kelamin">
@@ -98,9 +97,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label><strong>Status Ptkp</strong></label>
+                            <label><strong>Status PTKP</strong></label>
                             <select id='ptkp' class="form-control" name ="status_ptkp">
-                                <option value="">Pilih Status Ptkp</option>
+                                <option value="">Pilih Status PTKP</option>
                                 @foreach ($dataPtkp as $item)
                                 
                                 <option value="{{  $item->ptkp}}">{{ $item->ptkp }}</option>
