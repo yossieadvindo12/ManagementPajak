@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/extract-text', [OCRcontroller::class,'extractText']);
     Route::post('/storeEmployee', [EmployeeController::class,'store']);  
     Route::get('/Bpjs',[BPJSController::class,'index'])->name('Bpjs');
-    Route::post('/storeBPJS', [BPJSController::class,'store']); 
+    Route::post('/storeBPJS', [BPJSController::class,'store'])->name('storeBPJS'); 
     Route::get('/showBpjs/{id_company}', [BPJSController::class,'insertShow'])->name('showBpjs'); 
 
     Route::get('/company', [CompanyController::class,'index'])->name('company.view');

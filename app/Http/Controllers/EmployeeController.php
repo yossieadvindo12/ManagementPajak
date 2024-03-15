@@ -6,6 +6,7 @@ use App\Models\Ptkp;
 use App\Models\Salary;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\Tunjangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -47,7 +48,8 @@ class EmployeeController extends Controller
             'status_ptkp' => 'string',
             'kode_karyawan' => 'string',
             'id_company' => 'integer',
-            'salary' => 'required|integer'
+            'salary' => 'required|integer',
+
         ]);
 
         // dd($request->all());
@@ -70,6 +72,12 @@ class EmployeeController extends Controller
             'gaji_pokok' => $request->salary
            ]);
         
+        Tunjangan::create([
+            'nik' => $request->nik,
+            'sc' => $request->sc,
+            'natura' => $request->natura,
+            'bpjs_kesehatan' => $request->bpjs_kesehatan
+        ]);
            return back()->with([
             'success' => 'Berhasil menambahkan data perusahaan.'
         ]);

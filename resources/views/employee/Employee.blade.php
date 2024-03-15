@@ -30,7 +30,7 @@
                         <th scope="row">{{ $item->id }}</th>
                         <td>{{ $item->nama }}</td>
                         <td>{{ $item->nik }}</td>
-                        <td>{{ $item->tempat }}.', '.{{ $item->tanggal_lahir }} </td>
+                        <td>{{ $item->tempat }}, {{ $item->tanggal_lahir }} </td>
                         <td>{{ $item->alamat }}</td>
                         <td>{{ $item->jenis_kelamin }}</td>
                         <td>{{ $item->status_PTKP }}</td>
