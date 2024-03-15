@@ -20,6 +20,7 @@
         @csrf
         @method('PUT')
         <div class="form-group">
+            <label><strong>Nama Perusahaan</strong></label>
             <input type="text" name="name_company" class="form-control form-control-user"
                 placeholder="Nama Perusahaan" value="{{ $dataCompany->name_company }}">
 
@@ -29,7 +30,7 @@
         @enderror
         
         <button type="submit" class="btn btn-primary btn-user btn-block">
-            update</button>
+            Update</button>
 
     </form>
     </div>

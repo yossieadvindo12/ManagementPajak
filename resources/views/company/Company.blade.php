@@ -12,7 +12,6 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nama Perusahaan</th>
-                        {{-- <th scope="col">Perusahaan</th> --}}
                         <th scope="col">Aksi</th>
                     </tr>
                 </thead>
@@ -22,17 +21,16 @@
                     <tr>
                         <th scope="row">{{ $item->id_company }}</th>
                         <td>{{ $item->name_company }}</td>
-                        {{-- <td>Pelukis</td> --}}
                         
                         <td>
                             <button type="button" class="btn btn-warning">
                                 <a class="text-decoration-none text-light" href="{{ route('company.edit', $item->id_company) }}">Edit</a>
                             </button>
-                            <form method="POST" action="{{ route('company.destroy', ['id_company' => $item->id_company]) }}">
+                            {{-- <form method="POST" action="{{ route('company.destroy', ['id_company' => $item->id_company]) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger" >Delete</button>
-                            </form>
+                            </form> --}}
                             {{-- <button type="sumbit" class="btn btn-danger">
                                 <a class="text-decoration-none text-light" href="{{ route('company.destroy', ['id_company' => $item->id_company]) }}">Delete</a>
                             </button> --}}

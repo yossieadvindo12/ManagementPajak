@@ -28,7 +28,7 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
-            <a class="nav-link" href="/Employee">
+            <a class="nav-link" href="/employee">
                 <i class="fas fa-fw fa fa-users"></i>
                 <span>Employee</span>
             </a>

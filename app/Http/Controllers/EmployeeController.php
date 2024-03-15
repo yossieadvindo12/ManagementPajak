@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Ptkp;
 use App\Models\Salary;
-use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Tunjangan;
 use Illuminate\Http\Request;
@@ -18,7 +18,13 @@ class EmployeeController extends Controller
     public function index()
     {
         //
-        $dataEmployee = Employee::all();
+        // $dataEmployee = Employee::all();
+        $dataEmployee = DB::table('employee')
+        ->join('company', 'employee.id_company', '=', 'company.id_company')
+        ->select('employee.nik', 'employee.nama','employee.tempat',
+        'employee.tanggal_lahir','employee.alamat','employee.jenis_kelamin',
+        'employee.status_PTKP','employee.kode_karyawan','company.name_company')
+        ->get();
         return view('employee.Employee',compact('dataEmployee'));
     }
     
@@ -62,7 +68,7 @@ class EmployeeController extends Controller
             'jenis_kelamin' => $request->jenis_kelamin,
             'status_ptkp' => $request->status_ptkp,
             'kode_karyawan' => $request->kode_karyawan,
-            'id_company' => $request->id_company,
+            'id_employee' => $request->id_employee,
             'is_active' => 1,
             'created_at' => DB::raw('NOW()')
            ]);
@@ -95,17 +101,37 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Employee $employee)
+    public function edit( $nik)
     {
         //
+        $dataPerusahaan = Company::all();
+        $dataPtkp = Ptkp::all();
+
+        $dataEmployee = Employee::where('nik', $nik)->firstOrFail();
+        return view('employee.EditEmployee', compact('dataEmployee','dataPerusahaan','dataPtkp'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $nik)
     {
-        //
+        DB::table('employee')
+            ->where('nik', $nik)
+                ->update([
+                    'nama' => $request->nama,
+                    // 'nik' => $request->nik,
+                    'tempat' => $request->tempat,
+                    'tanggal_lahir' => $request->tanggal_lahir,
+                    'alamat' => $request->alamat,
+                    'jenis_kelamin' => $request->jenis_kelamin,
+                    'status_ptkp' => $request->status_PTKP,
+                    'kode_karyawan' => $request->kode_karyawan,
+                    'id_company' => $request->id_company,
+                    // 'updated_at' => now() // Assuming you want to update the 'updated_at' column to the current timestamp
+        ]);
+        
+        return redirect()->route('employee.view')->with('success', 'Data updated successfully.');
     }
 
     /**

@@ -81,8 +81,6 @@ class CompanyController extends Controller
      */
     public function update(Request $request,$id_company)
     {
-        //
-        $data = Company::where('id_company', $id_company)->firstOrFail();
     // Update your data here
         // dd($data);
         DB::table('company')
