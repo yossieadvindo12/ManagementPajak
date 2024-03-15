@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('salaries', function (Blueprint $table) {
-            $table->unsignedBigInteger('nik');
-            $table->integer('gaji_pokok');
+        Schema::create('ter', function (Blueprint $table) {
+            $table->id();
+            $table->integer("min");
+            $table->integer("max")->nullable();
+            $table->float("presentase");
+            $table->string("Ter");
+            $table->string("Ter alias");
             $table->timestamps();
         });
     }
@@ -23,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('salaries');
+        Schema::dropIfExists('ters');
     }
 };

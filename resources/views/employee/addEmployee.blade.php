@@ -122,7 +122,28 @@
                             <input type="text" id="salary" name="salary" value=""
                                 class="form-control form-control-user" placeholder="gaji pokok" />
                         </div>
+                        <div class="form-group">
+                            <label><strong>Tunjangan SC</strong></label>
+                            <input type="text" id="sc" name="sc" value="{{ old('sc') }}"
+                                class="form-control form-control-user" placeholder="Tunjangan SC" />
+                        </div>
                         @error('salary')
+                        <small>{{ $message }}</small>
+                    @enderror
+                        <div class="form-group">
+                            <label><strong>Tunjangan Natura</strong></label>
+                            <input type="text" id="natura" name="natura" value="{{ old('natura') }}"
+                                class="form-control form-control-user" placeholder="Tunjangan Natura" />
+                        </div>
+                        @error('natura')
+                        <small>{{ $message }}</small>
+                    @enderror
+                        <div class="form-group">
+                            <label><strong>BPJS KESEHATAN</strong></label>
+                            <input type="text" id="bpjs_kesehatan" name="bpjs_kesehatan" value="{{ old('bpjs_kesehatan') }}"
+                                class="form-control form-control-user" placeholder="BPJS KESEHATAN" />
+                        </div>
+                        @error('bpjs_kesehatan')
                             <small>{{ $message }}</small>
                         @enderror
                         <button type="submit" class="btn btn-primary btn-user btn-block">Tambah</button>
