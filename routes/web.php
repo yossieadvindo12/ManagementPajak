@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OCRcontroller;
+use App\Http\Controllers\BPJSController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CompanyController;
@@ -40,6 +41,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/storeEmployee', [EmployeeController::class,'store']);
     Route::get('/employee/{item}/edit', [EmployeeController::class,'edit'])->name('employee.edit');
     Route::put('/employee/{nik}',  [EmployeeController::class,'update'])->name('employee.update');
+    
+    Route::get('/Bpjs',[BPJSController::class,'index'])->name('Bpjs');
+    Route::post('/storeBPJS', [BPJSController::class,'store'])->name('storeBPJS'); 
+    Route::get('/showBpjs/{id_company}', [BPJSController::class,'insertShow'])->name('showBpjs'); 
 
     Route::get('/company', [CompanyController::class,'index'])->name('company.view');
     Route::get('/addCompany', [CompanyController::class,'addCompany']);
