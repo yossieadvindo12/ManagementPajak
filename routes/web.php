@@ -43,8 +43,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/employee/{nik}',  [EmployeeController::class,'update'])->name('employee.update');
     
     Route::get('/Bpjs',[BPJSController::class,'index'])->name('Bpjs');
+    Route::get('/reportBpjs',[BPJSController::class,'reportIndex'])->name('reportBpjs');
     Route::post('/storeBPJS', [BPJSController::class,'store'])->name('storeBPJS'); 
-    Route::get('/showBpjs/{id_company}', [BPJSController::class,'insertShow'])->name('showBpjs'); 
+    Route::get('/showBpjs/{id_company}/{monthnum}', [BPJSController::class,'insertShow'])->name('showBpjs'); 
+    Route::get('/reportBpjs/{id_company}', [BPJSController::class,'reportShow'])->name('reportBpjs'); 
 
     Route::get('/company', [CompanyController::class,'index'])->name('company.view');
     Route::get('/addCompany', [CompanyController::class,'addCompany']);

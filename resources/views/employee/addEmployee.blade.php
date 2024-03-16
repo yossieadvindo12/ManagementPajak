@@ -18,7 +18,11 @@
                             {{ Session::get('success') }}
                         </div>
                     @endif
-
+                    @if (Session::has('error'))
+                    <div class="alert alert-warning" role="alert">
+                        {{ Session::get('error') }}
+                    </div>
+                @endif
                     <form id="ocrForm" class="d-flex justify-content-between" action="/extract-text" method="post"
                         enctype="multipart/form-data">
                         @csrf

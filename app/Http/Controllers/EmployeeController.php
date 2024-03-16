@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
 use App\Models\Ptkp;
 use App\Models\Salary;
+use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Tunjangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class EmployeeController extends Controller
 {
@@ -59,20 +60,33 @@ class EmployeeController extends Controller
         ]);
 
         // dd($request->all());
-        Employee::create([
-            'nama'  => $request->nama,
-            'nik' => $request->nik,
-            'tempat' => $request->tempat,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'alamat' => $request->alamat,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'status_ptkp' => $request->status_ptkp,
-            'kode_karyawan' => $request->kode_karyawan,
-            'id_employee' => $request->id_employee,
-            'is_active' => 1,
-            'created_at' => DB::raw('NOW()')
-           ]);
-        
+        try{
+            Employee::create([
+                'nama'  => $request->nama,
+                'nik' => $request->nik,
+                'tempat' => $request->tempat,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'alamat' => $request->alamat,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'status_ptkp' => $request->status_ptkp,
+                'id_company' => $request->id_company,
+                'kode_karyawan' => $request->kode_karyawan,
+                'id_employee' => $request->id_employee,
+                'is_active' => 1,
+                'created_at' => DB::raw('NOW()')
+            ]);
+        }   catch (QueryException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                return back()->with([
+                    'error' => 'Error, Data Karyawan Sudah terdapat didatabase.'
+                ]);
+            } else {
+                DB::rollback();
+                \Log::error($e->getMessage());
+                return response()->json(['error' => 'An error occurred while processing your request'], 500);
+            }
+        }
+            
         Salary::create([
             'nik' => $request->nik,
             'gaji_pokok' => $request->salary
