@@ -8,45 +8,25 @@
         <form id="bpjsForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->
-            <div class="d-flex justify-content-between mb-5">
-                <div class="d-flex">
-                    <div class="form-group w-35 ml-3">
-                        <label><strong>Perusahaan</strong></label>
-                        <select id="company" class="form-control" name="id_company">
-                            <option value="">Pilih Perusahaan</option>
-                            @foreach ($dataPerusahaan as $item)
-                                <option value="{{ $item->id_company }}">{{ $item->name_company }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group ml-3">
-                        <label for="DateReport">Bulan:</label>
-                        <select id="month" class="form-control" name="month">
-                            <option value="">Pilih Bulan</option>
-                            <option value="1">Januari</option>
-                            <option value="2">Februari</option>
-                            <option value="3">Maret</option>
-                            <option value="4">April</option>
-                            <option value="5">Mei</option>
-                            <option value="6">Juni</option>
-                            <option value="7">Juli</option>
-                            <option value="8">Agustus</option>
-                            <option value="9">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                    </div>
+            <div class="d-flex justify-content-between p-3">
+                <div class="form-group w-50">
+                    <label><strong>Perusahaan</strong></label>
+                    <select id="company" class="form-control" name="id_company">
+                        <option value="">Pilih Perusahaan</option>
+                        @foreach ($dataPerusahaan as $item)
+                        <option value="{{ $item->id_company }}">{{ $item->name_company }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="ml-3 d-flex">
-                    <button type="button" class="ml-2 mt-4 btn btn-success" onclick="submitForm('add')">Tambah +</button>
+                <div class="d-flex">
+                    <button type="button" class="mt-4 btn btn-success" onclick="submitForm('show')">Cari</button>
                 </div>
             </div>
             <!-- Other form fields -->
         </form>
-
-
-
+        
+        
+        
         <div class="row table-responsive">
             <table class="table">
                 <thead>
@@ -97,50 +77,23 @@
             </table>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    @if ($message = Session::get('success'))
-        <script>
-            Swal.fire('{{ $message }}');
-        </script>
-    @endif
-
-    @if ($message = Session::get('error'))
-        <script>
-            Swal.fire('{{ $message }}');
-        </script>
-    @endif
     <script>
         function submitForm(action) {
             var form = document.getElementById('bpjsForm');
             var companyId = document.getElementById('company').value;
-
+    
             if (companyId === '') {
                 // Handle case where no company is selected
                 alert('Please select a company.');
                 return;
             }
-
-            if (action === 'add') {
-                // Submit the form to storeBPJS route
-                form.action = "{{ route('storeBPJS') }}";
-                form.submit();
+    
+            if (action === 'show') {
+                // Redirect to showBpjs route
+                window.location.href = "{{ url('reportBpjs') }}/" + companyId;
+            
             }
         }
-    </script>
-    <script>
-        // JavaScript to restrict end_date input based on start_date
-        document.getElementById('start_date').addEventListener('change', function() {
-            var startDate = new Date(this.value);
-            var endDateInput = document.getElementById('end_date');
-            if (startDate) {
-                endDateInput.min = this.value;
-                endDateInput.disabled = false;
-            } else {
-                endDateInput.min = null;
-                endDateInput.disabled = true;
-            }
-        });
     </script>
 @endsection
 @endsection
