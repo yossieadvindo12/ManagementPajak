@@ -12,13 +12,6 @@
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item ">
-        <a class="nav-link" href="/index">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
-    </li>
-
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -48,6 +41,13 @@
             </a>
 
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/pph21">
+                <i class="fas fa-fw fa fa-calculator"></i>
+                <span>PPH 21</span>
+            </a>
+
+        </li>
 
     </div>
 
@@ -66,7 +66,7 @@
 
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/company">
+            <a class="nav-link" href="/reportPph">
                 <i class="fas fa-fw fa fa-file-alt"></i>
                 <span>Laporan PPH 21</span>
             </a>
