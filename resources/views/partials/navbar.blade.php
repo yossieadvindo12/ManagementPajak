@@ -43,7 +43,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/Bpjs">
-                <i class="fas fa-fw fa fa-building"></i>
+                <i class="fas fa-fw fa fa-shield-alt"></i>
                 <span>BPJS</span>
             </a>
 
@@ -60,14 +60,14 @@
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
             <a class="nav-link" href="/reportBpjs">
-                <i class="fas fa-fw fa fa-users"></i>
+                <i class="fas fa-fw fa fa-file-alt"></i>
                 <span>Laporan BPJS</span>
             </a>
 
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/company">
-                <i class="fas fa-fw fa fa-building"></i>
+                <i class="fas fa-fw fa fa-file-alt"></i>
                 <span>Laporan PPH 21</span>
             </a>
 
