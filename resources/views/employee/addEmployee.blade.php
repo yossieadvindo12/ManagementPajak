@@ -128,7 +128,8 @@
                         </div>
                         @error('salary')
                         <small>{{ $message }}</small>
-                    @enderror
+                        @enderror
+
                         <div class="form-group">
                             <label><strong>Tunjangan Natura</strong></label>
                             <input type="text" id="natura" name="natura" value="{{ old('natura') }}"
@@ -136,7 +137,8 @@
                         </div>
                         @error('natura')
                         <small>{{ $message }}</small>
-                    @enderror
+                        @enderror
+
                         <div class="form-group">
                             <label><strong>BPJS KESEHATAN</strong></label>
                             <input type="text" id="bpjs_kesehatan" name="bpjs_kesehatan" value="{{ old('bpjs_kesehatan') }}"
