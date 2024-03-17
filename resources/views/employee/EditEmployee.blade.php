@@ -129,15 +129,43 @@
             </select>
         </div>
 
-        {{-- <div class="form-group">
+        <div class="form-group">
             <label><strong>Gaji Pokok</strong></label>
-            <input type="text" id="salary" name="salary" value="{{ $dataEmployee->gaji_pokok }}"
+            <input type="number" id="gaji_pokok" name="gaji_pokok" value="{{ old('gaji_pokok',$dataEmployee->gaji_pokok? $dataEmployee->gaji_pokok :0) }}"
                 class="form-control form-control-user" placeholder="gaji pokok" />
         </div>
         @error('salary')
             <small>{{ $message }}</small>
-        @enderror --}}
+        @enderror
         
+        <div class="form-group">
+            <label><strong>Tunjangan SC</strong></label>
+            <input type="number" id="sc" name="sc" value="{{ old('sc',$dataEmployee->sc? $dataEmployee->sc :0) }}"
+                class="form-control form-control-user" placeholder="Tunjangan SC" />
+        </div>
+        @error('salary')
+        <small>{{ $message }}</small>
+        @enderror
+        
+        <div class="form-group">
+            <label><strong>Tunjangan Natura</strong></label>
+            <input type="number" id="natura" name="natura" value="{{ old('natura',$dataEmployee->natura? $dataEmployee->natura :0) }}"
+                class="form-control form-control-user" placeholder="Tunjangan Natura" />
+        </div>
+        @error('natura')
+        <small>{{ $message }}</small>
+        @enderror
+
+        <div class="form-group">
+            <label><strong>BPJS KESEHATAN</strong></label>
+            <input type="number" id="bpjs_kesehatan" name="bpjs_kesehatan" value="{{ old('bpjs_kesehatan',$dataEmployee->bpjs_kesehatan? $dataEmployee->bpjs_kesehatan :0) }}"
+                class="form-control form-control-user" placeholder="BPJS KESEHATAN" />
+        </div>
+        @error('bpjs_kesehatan')
+            <small>{{ $message }}</small>
+        @enderror
+
+
         <button type="submit" class="btn btn-primary btn-user btn-block">
             Update</button>
 

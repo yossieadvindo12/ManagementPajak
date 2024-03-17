@@ -19,13 +19,31 @@ class EmployeeController extends Controller
     {
         //
         // $dataEmployee = Employee::all();
+        // $sql="SELECT employee.nik, employee.nama,employee.tempat,
+        // employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
+        // employee.status_PTKP,employee.kode_karyawan,company.name_company,
+        // salaries.gaji_pokok, tunjangans.sc,tunjangans.natura,tunjangans.bpjs_kesehatan 
+        // FROM employee 
+        // LEFT JOIN company ON employee.id_company=company.id_company
+        // LEFT JOIN 
+        //     (SELECT nik, MAX(updated_at) AS max_updated_at 
+        //     FROM salaries GROUP BY nik) 
+        //     AS salaries ON employee.nik=salaries.nik
+        // LEFT JOIN 
+        //     (SELECT nik, MAX(updated_at) AS max_updated_at 
+        //     FROM tunjangans GROUP BY nik) 
+        //     AS tunjangans ON employee.nik=tunjangans.nik
+        // ";
+
         $dataEmployee = DB::table('employee')
         ->join('company', 'employee.id_company', '=', 'company.id_company')
         ->select('employee.nik', 'employee.nama','employee.tempat',
         'employee.tanggal_lahir','employee.alamat','employee.jenis_kelamin',
-        'employee.status_PTKP','employee.kode_karyawan','company.name_company')
+        'employee.status_PTKP','employee.kode_karyawan','company.id_company','company.name_company')
         ->get();
-        return view('employee.Employee',compact('dataEmployee'));
+        // $dataEmployee = DB::select($sql);
+        $dataPerusahaan = Company::all();
+        return view('employee.Employee',compact('dataEmployee','dataPerusahaan'));
     }
     
     /**
@@ -68,7 +86,7 @@ class EmployeeController extends Controller
             'jenis_kelamin' => $request->jenis_kelamin,
             'status_ptkp' => $request->status_ptkp,
             'kode_karyawan' => $request->kode_karyawan,
-            'id_employee' => $request->id_employee,
+            'id_company' => $request->id_company,
             'is_active' => 1,
             'created_at' => DB::raw('NOW()')
            ]);
@@ -76,7 +94,7 @@ class EmployeeController extends Controller
         Salary::create([
             'nik' => $request->nik,
             'gaji_pokok' => $request->salary
-           ]);
+        ]);
         
         Tunjangan::create([
             'nik' => $request->nik,
@@ -93,9 +111,20 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Employee $employee)
+    public function show($id_company)
     {
-        //
+        
+        $sql ="SELECT employee.nik, employee.nama,employee.tempat,
+        employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
+        employee.status_PTKP,employee.kode_karyawan,company.id_company,company.name_company
+        FROM employee 
+        LEFT JOIN company ON employee.id_company=company.id_company
+        WHERE employee.id_company =  $id_company
+        ";
+
+        $dataEmployee = DB::select($sql);
+        $dataPerusahaan = Company::all();
+        return view('employee.Employee',compact('dataEmployee','dataPerusahaan'));
     }
 
     /**
@@ -107,7 +136,23 @@ class EmployeeController extends Controller
         $dataPerusahaan = Company::all();
         $dataPtkp = Ptkp::all();
 
-        $dataEmployee = Employee::where('nik', $nik)->firstOrFail();
+        $sql="SELECT employee.nik, employee.nama,employee.tempat,
+        employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
+        employee.status_PTKP,employee.kode_karyawan,company.id_company,company.name_company,
+        salaries.gaji_pokok, tunjangans.sc,tunjangans.natura,tunjangans.bpjs_kesehatan 
+        FROM employee 
+        LEFT JOIN company ON employee.id_company=company.id_company
+        LEFT JOIN 
+            (SELECT nik, gaji_pokok 
+            FROM salaries WHERE nik =  $nik ORDER BY updated_at desc limit 1) 
+            AS salaries ON employee.nik=salaries.nik
+        LEFT JOIN 
+            (SELECT nik,sc,natura,bpjs_kesehatan
+            FROM tunjangans WHERE nik =  $nik ORDER BY updated_at desc limit 1)
+            AS tunjangans ON employee.nik=tunjangans.nik
+        WHERE employee.nik =  $nik
+        ";
+        $dataEmployee = DB::select($sql)[0];
         return view('employee.EditEmployee', compact('dataEmployee','dataPerusahaan','dataPtkp'));
     }
 
@@ -116,6 +161,25 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $nik)
     {
+
+        $sql="SELECT employee.nik, employee.nama,employee.tempat,
+        employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
+        employee.status_PTKP,employee.kode_karyawan,company.id_company,company.name_company,
+        salaries.gaji_pokok, tunjangans.sc,tunjangans.natura,tunjangans.bpjs_kesehatan 
+        FROM employee 
+        LEFT JOIN company ON employee.id_company=company.id_company
+        LEFT JOIN 
+            (SELECT nik, gaji_pokok 
+            FROM salaries WHERE nik =  $nik ORDER BY updated_at desc limit 1) 
+            AS salaries ON employee.nik=salaries.nik
+        LEFT JOIN 
+            (SELECT nik,sc,natura,bpjs_kesehatan
+            FROM tunjangans WHERE nik =  $nik ORDER BY updated_at desc limit 1)
+            AS tunjangans ON employee.nik=tunjangans.nik
+        WHERE employee.nik =  $nik
+        ";
+        $dataEmployee = DB::select($sql)[0];
+
         DB::table('employee')
             ->where('nik', $nik)
                 ->update([
@@ -130,7 +194,30 @@ class EmployeeController extends Controller
                     'id_company' => $request->id_company,
                     // 'updated_at' => now() // Assuming you want to update the 'updated_at' column to the current timestamp
         ]);
-        
+
+        if($dataEmployee->gaji_pokok != $request->gaji_pokok){
+            Salary::create([
+                'nik' => $nik,
+                'gaji_pokok' => $request->gaji_pokok
+            ]);
+            // return $dataEmployee->gaji_pokok == $request->gaji_pokok;
+        }
+
+        if($dataEmployee->sc != $request->sc || 
+        $dataEmployee->natura != $request->natura || 
+        $dataEmployee->bpjs_kesehatan != $request->bpjs_kesehatan)
+        {
+            Tunjangan::create([
+                'nik' => $nik,
+                'sc' => $request->sc,
+                'natura' => $request->natura,
+                'bpjs_kesehatan' => $request->bpjs_kesehatan
+            ]);
+            // return $dataEmployee->sc !== $request->sc || 
+            // $dataEmployee->natura !== $request->natura || 
+            // $dataEmployee->bpjs_kesehatan !== $request->bpjs_kesehatan;
+        }
+
         return redirect()->route('employee.view')->with('success', 'Data updated successfully.');
     }
 
