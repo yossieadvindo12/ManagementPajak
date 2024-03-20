@@ -18,7 +18,7 @@ class BPJSController extends Controller
     {
         //
         $sql = "SELECT 
-        id,
+        emp.id,
         emp.nama,
         bpjs.nik,
         c.name_company,
@@ -36,7 +36,7 @@ class BPJSController extends Controller
         YEAR(bpjs.updated_at) AS year
         FROM bpjs 
         LEFT JOIN company AS c ON bpjs.id_company = c.id_company
-        left Join employee as emp on bpjs.nik = emp.nik
+        left Join employee as emp on bpjs.id_employee = emp.id_employee
         ";
         // GROUP BY bpjs.id, emp.nama,bpjs.nik, c.name_company,gaji_pokok,MONTHNAME(bpjs.updated_at),YEAR(bpjs.updated_at)
 
@@ -109,7 +109,8 @@ class BPJSController extends Controller
         
 
         // if (!$exists) {
-        $sql = "INSERT INTO bpjs (nik,
+        $sql = "INSERT INTO bpjs (id_employee,
+        nik,npwp,
         id_company,
         gaji_pokok,
         jht_karyawan,
@@ -125,7 +126,9 @@ class BPJSController extends Controller
         updated_at
         )
         (SELECT 
+    emp.id,
     emp.nik, 
+    emp.npwp,
     c.id_company, 
     s.gaji_pokok, 
     s.gaji_pokok * 0.02 AS jht_karyawan, 
@@ -142,22 +145,22 @@ class BPJSController extends Controller
     FROM 
     employee AS emp 
     LEFT JOIN 
-    (SELECT nik, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= :monthnum3 GROUP BY nik) AS max_salaries
-    ON emp.nik = max_salaries.nik
+    (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= :monthnum3 GROUP BY id_employee, nik, npwp) AS max_salaries
+    ON emp.id = max_salaries.id_employee
     LEFT JOIN 
     salaries AS s 
-    ON emp.nik = s.nik AND s.updated_at = max_salaries.max_updated_at
+    ON emp.id = s.id_employee AND s.updated_at = max_salaries.max_updated_at
     LEFT JOIN 
     company AS c 
     ON emp.id_company = c.id_company 
     LEFT JOIN 
-    (SELECT nik, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= :monthnum4 GROUP BY nik) AS max_tunjangans
-    ON emp.nik = max_tunjangans.nik
+    (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= :monthnum4 GROUP BY id_employee, nik, npwp) AS max_tunjangans
+    ON emp.id = max_tunjangans.id_employee
     LEFT JOIN 
     tunjangans AS t 
-    ON emp.nik = t.nik AND t.updated_at = max_tunjangans.max_updated_at
-        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT NULL
-        GROUP BY emp.nik, c.id_company, s.gaji_pokok, t.bpjs_kesehatan)";
+    ON emp.id = t.id_employee AND t.updated_at = max_tunjangans.max_updated_at
+        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT NULL and emp.is_active = 1
+        GROUP BY emp.id,emp.nik,emp.npwp, c.id_company, s.gaji_pokok, t.bpjs_kesehatan)";
     
     DB::insert($sql, [
         'id_company' => $request->id_company, 
@@ -185,7 +188,7 @@ class BPJSController extends Controller
     {
         //
         $sql = "SELECT 
-        id,
+        emp.id,
         emp.nama,
         bpjs.nik,
         c.name_company,
@@ -203,7 +206,7 @@ class BPJSController extends Controller
         YEAR(bpjs.updated_at) AS year
         FROM bpjs 
         LEFT JOIN company AS c ON bpjs.id_company = c.id_company
-        left Join employee as emp on bpjs.nik = emp.nik
+        left Join employee as emp on bpjs.id_employee = emp.id
         WHERE emp.id_company = :id_company and MONTH(bpjs.updated_at) = :monthnum";
 
         $dataBPJS = DB::select($sql, ['id_company' => $id_company,'monthnum'=> $monthnum]);

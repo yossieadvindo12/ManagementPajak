@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tunjangans', function (Blueprint $table) {
-            $table->unsignedBigInteger('nik');
+            $table->integer('id_employee');
+            $table->unsignedBigInteger('nik')->nullable();
+            $table->unsignedBigInteger('npwp')->nullable();
             $table->integer('sc')->nullable();
             $table->integer('natura')->nullable();
             $table->integer('bpjs_kesehatan')->nullable();
+            $table->integer('thr')->nullable();
             $table->timestamps();
         });
     }

@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/showEmployee/{id_company}', [EmployeeController::class,'show'])->name('showEmployee');
     Route::get('/employee/export_excel', [EmployeeController::class,'export_excel'])->name('export_excel');
     Route::get('/employee/{item}/edit', [EmployeeController::class,'edit'])->name('employee.edit');
-    Route::put('/employee/{nik}',  [EmployeeController::class,'update'])->name('employee.update');
+    Route::put('/employee/{id_employee}',  [EmployeeController::class,'update'])->name('employee.update');
     
     Route::get('/Bpjs',[BPJSController::class,'index'])->name('Bpjs');
     Route::get('/reportBpjs',[BPJSController::class,'reportIndex'])->name('reportBpjs');
