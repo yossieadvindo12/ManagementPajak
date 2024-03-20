@@ -19,14 +19,14 @@
                     </select>
                 </div>
                 <div class="d-flex">
-                    <button type="button" class="mt-4 btn btn-success" onclick="submitForm('show')">Cari</button>
+                    <button type="button" class="mt-4  btn btn-success" onclick="submitForm('show')">Cari</button>
+                    <button type="button" class="ml-3 mt-4 btn btn-success"><a class="text-decoration-none text-light" href="/addEmployee">Tambah +</a></button>
                 </div>
             </div>
             <!-- Other form fields -->
         </form>
 
         <a href="/employee/export_excel" class="btn btn-success my-3" target="_blank">EXPORT EXCEL</a>
-        <button type="button" class=" mb-4 btn btn-success"><a class="text-decoration-none text-light" href="/addEmployee">Tambah +</a></button>
         <div class="row">
             <table class="table">
                 <thead>
@@ -84,6 +84,9 @@
             if (action === 'show') {
                 // Redirect to showEmployee route
                 window.location.href = "{{ url('showEmployee') }}/" + companyId;
+            }else if (action === 'add') {
+                // Submit the form to storeBPJS route
+                form.action = "{{ route('addEmployee') }}";
             }
         }
     </script>

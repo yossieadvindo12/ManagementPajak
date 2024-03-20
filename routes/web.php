@@ -5,6 +5,7 @@ use App\Http\Controllers\OCRcontroller;
 use App\Http\Controllers\BPJSController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\Phh21Controller;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RegisterController;
@@ -50,6 +51,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/showBpjs/{id_company}/{monthnum}', [BPJSController::class,'insertShow'])->name('showBpjs');
     Route::get('/reportBpjs/{id_company}/{year}', [BPJSController::class,'reportShow'])->name('reportBpjs'); 
     Route::get('/reportBpjs/export_excel', [BPJSController::class,'export_excel'])->name('reportBpjs.export_excel');
+
+    Route::get('/pph21',[Phh21Controller::class,'index'])->name('pph21');
+    Route::get('/reportPph',[Phh21Controller::class,'reportIndex'])->name('reportPph');
+    Route::post('/storePph', [Phh21Controller::class,'store'])->name('storePph'); 
+    Route::get('/showPph/{id_company}/{monthnum}/{keterangan_pph}', [Phh21Controller::class,'insertShow'])->name('showPph'); 
+    Route::get('/reportPph/{id_company}', [Phh21Controller::class,'reportShow'])->name('reportPph'); 
 
     Route::get('/company', [CompanyController::class,'index'])->name('company.view');
     Route::get('/addCompany', [CompanyController::class,'addCompany']);
