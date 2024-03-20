@@ -25,6 +25,7 @@
             <!-- Other form fields -->
         </form>
 
+        <a href="/employee/export_excel" class="btn btn-success my-3" target="_blank">EXPORT EXCEL</a>
         <button type="button" class=" mb-4 btn btn-success"><a class="text-decoration-none text-light" href="/addEmployee">Tambah +</a></button>
         <div class="row">
             <table class="table">
