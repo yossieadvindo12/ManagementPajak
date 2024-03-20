@@ -97,13 +97,13 @@ class BPJSController extends Controller
 
         ]);
 
-        $exists = DB::table('bpjs')
-        ->where('id_company', $request->id_company)
-        ->whereRaw('MONTH(updated_at) = ?', [$request->month])
-        ->exists();
+        // $exists = DB::table('bpjs')
+        // ->where('id_company', $request->id_company)
+        // ->whereRaw('MONTH(updated_at) = ?', [$request->month])
+        // ->exists();
         
 
-        if (!$exists) {
+        // if (!$exists) {
         $sql = "INSERT INTO bpjs (nik,
         id_company,
         gaji_pokok,
@@ -124,14 +124,14 @@ class BPJSController extends Controller
     c.id_company, 
     s.gaji_pokok, 
     s.gaji_pokok * 0.02 AS jht_karyawan, 
-    s.gaji_pokok * 0.37 AS jht_pt, 
-    s.gaji_pokok * 0.30 AS jkm, 
-    s.gaji_pokok * 0.54 AS jkk, 
+    s.gaji_pokok * 0.037 AS jht_pt, 
+    s.gaji_pokok * 0.0030 AS jkm, 
+    s.gaji_pokok * 0.0054 AS jkk, 
     s.gaji_pokok * 0.01 AS jp_karyawan, 
     s.gaji_pokok * 0.02 AS jp_pt, 
     IF(t.bpjs_kesehatan IS NULL, 0, t.bpjs_kesehatan) AS bpjs_kesehatan, 
     (s.gaji_pokok * 0.02) + (s.gaji_pokok * 0.01) AS ditanggung_karyawan, 
-    (s.gaji_pokok * 0.37) + (s.gaji_pokok * 0.30) + (s.gaji_pokok * 0.54) + (s.gaji_pokok * 0.02) + IF(t.bpjs_kesehatan IS NULL, 0, t.bpjs_kesehatan) AS ditanggung_pt, 
+    (s.gaji_pokok * 0.037) + (s.gaji_pokok * 0.0030) + (s.gaji_pokok * 0.0054) + (s.gaji_pokok * 0.02) + IF(t.bpjs_kesehatan IS NULL, 0, t.bpjs_kesehatan) AS ditanggung_pt, 
     DATE_FORMAT(CONCAT(YEAR(NOW()), CONCAT('-', :monthnum1), '-01'), '%Y-%m-%d') AS created_at, 
     DATE_FORMAT(CONCAT(YEAR(NOW()), CONCAT('-', :monthnum2), '-01'), '%Y-%m-%d') AS updated_at 
     FROM 
@@ -164,13 +164,13 @@ class BPJSController extends Controller
     
 
         return redirect()->route('showBpjs', ['id_company' => $request->id_company, 'monthnum'=> $request->month ])->with('succes','data berhasil ditambahkan');
-}else {
-    // Handle exceptions, for example:
-        return back()->with([
-            'error' => 'Error, Data bpjs Sudah terdapat didatabase.'
-        ]);
+// }else {
+//     // Handle exceptions, for example:
+//         return back()->with([
+//             'error' => 'Error, Data bpjs Sudah terdapat didatabase.'
+//         ]);
 
-    }
+//     }
 }
 
     /**

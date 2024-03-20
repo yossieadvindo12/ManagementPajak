@@ -892,6 +892,8 @@ class TerSeeders extends Seeder
                  'TER ALIAS'=> 'TER C 34,00%'
                 ]
                
+                
+               
         ];
         DB::table('ter')->insert($ter);
     }
