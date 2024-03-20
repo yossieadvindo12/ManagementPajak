@@ -40,14 +40,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/extract-text', [OCRcontroller::class,'extractText']);
     Route::post('/storeEmployee', [EmployeeController::class,'store']); 
     Route::get('/showEmployee/{id_company}', [EmployeeController::class,'show'])->name('showEmployee');
+    Route::get('/employee/export_excel', [EmployeeController::class,'export_excel'])->name('export_excel');
     Route::get('/employee/{item}/edit', [EmployeeController::class,'edit'])->name('employee.edit');
     Route::put('/employee/{nik}',  [EmployeeController::class,'update'])->name('employee.update');
     
     Route::get('/Bpjs',[BPJSController::class,'index'])->name('Bpjs');
     Route::get('/reportBpjs',[BPJSController::class,'reportIndex'])->name('reportBpjs');
     Route::post('/storeBPJS', [BPJSController::class,'store'])->name('storeBPJS'); 
-    Route::get('/showBpjs/{id_company}/{monthnum}', [BPJSController::class,'insertShow'])->name('showBpjs'); 
-    Route::get('/reportBpjs/{id_company}', [BPJSController::class,'reportShow'])->name('reportBpjs'); 
+    Route::get('/showBpjs/{id_company}/{monthnum}', [BPJSController::class,'insertShow'])->name('showBpjs');
+    Route::get('/reportBpjs/{id_company}/{year}', [BPJSController::class,'reportShow'])->name('reportBpjs'); 
+    Route::get('/reportBpjs/export_excel', [BPJSController::class,'export_excel'])->name('reportBpjs.export_excel');
 
     Route::get('/company', [CompanyController::class,'index'])->name('company.view');
     Route::get('/addCompany', [CompanyController::class,'addCompany']);

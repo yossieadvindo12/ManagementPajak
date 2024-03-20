@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BpjsExport;
 use App\Models\BPJS;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BPJSController extends Controller
 {
@@ -48,27 +50,30 @@ class BPJSController extends Controller
         //
 
 
-        $sql = "SELECT 
-        id,
-        emp.nama,
-        bpjs.nik,
-        c.name_company,
-        gaji_pokok,
-        jht_karyawan,
-      	jht_pt,
-        jkm,
-        jkk,
-        jp_karyawan,
-        jp_pt,
-        bpjs_kesehatan,
-        ditanggung_karyawan,
-        ditanggung_pt,
-        MONTHNAME(bpjs.updated_at) AS bulan,
-        YEAR(bpjs.updated_at) AS year
-        FROM bpjs 
-        LEFT JOIN company AS c ON bpjs.id_company = c.id_company
-        left Join employee as emp on bpjs.nik = emp.nik
-        ";
+        $sql ="
+        SELECT
+            emp.nama,
+            c.name_company,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JANUARY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS JANUARY,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'FEBRUARY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS FEBRUARY,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MARCH' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS MARCH,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'APRIL' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS APRIL,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MAY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS MAY,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JUNE' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS JUNE,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JULY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS JULY,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'AUGUST' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS AUGUST,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'SEPTEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS SEPTEMBER,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'OCTOBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS OCTOBER,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'NOVEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS NOVEMBER,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS DECEMBER
+            from bpjs
+            LEFT JOIN company AS c
+                    ON bpjs.id_company = c.id_company
+            left Join employee as emp
+                    on bpjs.nik = emp.nik
+            where year(bpjs.updated_at)=2024
+            group by emp.nama,c.name_company
+                ";
         // GROUP BY bpjs.id, emp.nama,bpjs.nik, c.name_company,gaji_pokok,MONTHNAME(bpjs.updated_at),YEAR(bpjs.updated_at)
 
         $dataBPJS = DB::select($sql);
@@ -207,32 +212,36 @@ class BPJSController extends Controller
         return view('bpjs.bpjs', compact('dataBPJS','dataPerusahaan'));
     }
 
-    public function reportShow($id_company)
+    public function reportShow($id_company, $year)
     {
         //
-        $sql = "SELECT 
-        id,
-        emp.nama,
-        bpjs.nik,
-        c.name_company,
-        gaji_pokok,
-        jht_karyawan,
-      	jht_pt,
-        jkm,
-        jkk,
-        jp_karyawan,
-        jp_pt,
-        bpjs_kesehatan,
-        ditanggung_karyawan,
-        ditanggung_pt,
-        MONTHNAME(bpjs.updated_at) AS bulan,
-        YEAR(bpjs.updated_at) AS year
-        FROM bpjs 
-        LEFT JOIN company AS c ON bpjs.id_company = c.id_company
-        left Join employee as emp on bpjs.nik = emp.nik
-        WHERE emp.id_company = :id_company";
+        $sql ="
+        SELECT
+            emp.nama,
+            c.name_company,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JANUARY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS JANUARY,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'FEBRUARY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS FEBRUARY,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MARCH' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS MARCH,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'APRIL' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS APRIL,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MAY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS MAY,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JUNE' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS JUNE,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JULY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS JULY,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'AUGUST' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS AUGUST,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'SEPTEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS SEPTEMBER,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'OCTOBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS OCTOBER,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'NOVEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS NOVEMBER,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS DECEMBER
+            from bpjs
+            LEFT JOIN company AS c
+                    ON bpjs.id_company = c.id_company
+            left Join employee as emp
+                    on bpjs.nik = emp.nik
+            where year(bpjs.updated_at)= :year
+            and emp.id_company = :id_company
+            group by emp.nama,c.name_company
+                ";
 
-        $dataBPJS = DB::select($sql, ['id_company' => $id_company]);
+        $dataBPJS = DB::select($sql, ['id_company' => $id_company,'year'=>$year]);
         $dataPerusahaan = Company::all();
         // Pass the data to the view to display
         return view('bpjs.reportBpjs', compact('dataBPJS','dataPerusahaan'));
@@ -261,4 +270,63 @@ class BPJSController extends Controller
     {
         //
     }
+
+    public function export_excel(Request $request)
+	{
+
+
+            $sql ="
+            SELECT
+                emp.nama,
+                c.name_company,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JANUARY' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS JANUARY,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'FEBRUARY' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS FEBRUARY,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MARCH' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS MARCH,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'APRIL' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS APRIL,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MAY' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS MAY,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JUNE' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS JUNE,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JULY' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS JULY,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'AUGUST' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS AUGUST,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'SEPTEMBER' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS SEPTEMBER,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'OCTOBER' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS OCTOBER,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'NOVEMBER' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS NOVEMBER,
+            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS DECEMBER
+                from bpjs
+                LEFT JOIN company AS c
+                        ON bpjs.id_company = c.id_company
+                left Join employee as emp
+                        on bpjs.nik = emp.nik
+                where year(bpjs.updated_at)=2024
+                group by emp.nama,c.name_company
+                    ";
+
+            
+            $data = DB::select($sql);
+            $arrayData[] = array('nama','name_company'
+            ,'JANUARY','FEBRUARY','MARCH','APRIL'
+            ,'MAY','JUNE','JULY','AUGUST'
+            ,'SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER');
+
+            foreach($data as $report){
+                $arrayData[]=array(
+                    'Nama' => $report->nama,
+                    'Perusahaan' => $report->name_company,
+                    'JANUARY' => $report->JANUARY,
+                    'FEBRUARY' => $report->FEBRUARY,
+                    'MARCH' => $report->MARCH,
+                    'APRIL' => $report->APRIL,
+                    'MAY' => $report->MAY,
+                    'JUNE' => $report->JUNE,
+                    'JULY' => $report->JULY,
+                    'AUGUST' => $report->AUGUST,
+                    'SEPTEMBER' => $report->SEPTEMBER,
+                    'OCTOBER' => $report->OCTOBER,
+                    'NOVEMBER' => $report->NOVEMBER,
+                    'DECEMBER' => $report->DECEMBER
+                );
+            }
+        
+
+		return Excel::download(new BpjsExport($data), 'bpjs.xlsx');
+	}
 }

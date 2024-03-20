@@ -77,16 +77,16 @@
                             <td>{{ $item->nama }}</td>
                             <td>{{ $item->name_company }}</td>
                             <td>{{ $item->nik }}</td>
-                            <td>{{ $item->gaji_pokok }}</td>
-                            <td>{{ $item->jht_karyawan }}</td>
-                            <td>{{ $item->jht_pt }}</td>
-                            <td>{{ $item->jkm }}</td>
-                            <td>{{ $item->jkk }}</td>
-                            <td>{{ $item->jp_karyawan }}</td>
-                            <td>{{ $item->jp_pt }}</td>
-                            <td>{{ $item->bpjs_kesehatan }}</td>
-                            <td>{{ $item->ditanggung_karyawan }}</td>
-                            <td>{{ $item->ditanggung_pt }}</td>
+                            <td>Rp. {{ number_format($item->gaji_pokok,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->jht_karyawan,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->jht_pt,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->jkm,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->jkk,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->jp_karyawan,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->jp_pt,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->bpjs_kesehatan,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->ditanggung_karyawan,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->ditanggung_pt,'0',',','.') }}</td>
                             <td>{{ $item->bulan }}</td>
                             <td>{{ $item->year }}</td>
                             {{-- <td>Pelukis</td> --}}
