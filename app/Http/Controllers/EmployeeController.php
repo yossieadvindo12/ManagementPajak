@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EmployeeExport;
 use App\Models\Ptkp;
 use App\Models\Salary;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Tunjangan;
+use Maatwebsite\Excel\Facades\Excel;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
@@ -242,4 +245,9 @@ class EmployeeController extends Controller
     {
         //
     }
+
+    public function export_excel()
+	{
+		return Excel::download(new EmployeeExport, 'employee.xlsx');
+	}
 }

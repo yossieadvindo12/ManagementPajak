@@ -9,7 +9,7 @@
     </div>
     <div class="p-5">
         <div class="text-center">
-            <h1 class="h4 text-gray-900 mb-4">Tambahkan Data Karyawan!</h1>
+            <h1 class="h4 text-gray-900 mb-4">Edit Data Karyawan!</h1>
         </div>
         @if (Session::has('success'))
         <div class="alert alert-success" role="alert">

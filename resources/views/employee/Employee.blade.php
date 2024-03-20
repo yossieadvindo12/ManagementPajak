@@ -26,6 +26,7 @@
             <!-- Other form fields -->
         </form>
 
+        <a href="/employee/export_excel" class="btn btn-success my-3" target="_blank">EXPORT EXCEL</a>
         <div class="row">
             <table class="table">
                 <thead>
