@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('natura')->nullable();
             $table->integer('bpjs_kesehatan')->nullable();
             $table->integer('thr')->nullable();
+            $table->integer('lain-lain')->nullable();
             $table->timestamps();
         });
     }
