@@ -4,7 +4,7 @@
 @section('content-wrapper')
 @section('content')
     <div class="container">
-        
+
         <a class=" text-body text-decoration-none" href="/employee"><i class=" fas fa-solid fa-arrow-left"></i></a>
     </div>
     <div class="p-5">
@@ -19,13 +19,23 @@
     <form class="user" action="{{ route('employee.update', $dataEmployee->id) }}" method="post">
         @csrf
         @method('PUT')
-        {{-- <div class="form-group">
+        <div class="form-group">
+            <label><strong>NPWP</strong></label>
+            <input type="text" name="npwp" class="form-control form-control-user"
+                placeholder="NPWP" value="{{ $dataEmployee->npwp }}">
+        </div>
+        @error('nik')
+            <small>{{ $message }}</small>
+        @enderror
+
+        <div class="form-group">
+            <label><strong>NIK</strong></label>
             <input type="text" name="nik" class="form-control form-control-user"
                 placeholder="NIK" value="{{ $dataEmployee->nik }}">
         </div>
         @error('nik')
             <small>{{ $message }}</small>
-        @enderror --}}
+        @enderror
 
         <div class="form-group">
             <label><strong>Nama Karyawan</strong></label>
@@ -114,6 +124,22 @@
         </div>
 
         <div class="form-group">
+            <label><strong>Apakah Karyawan Aktif?</strong></label>
+            <select id="is_active" class="form-control" name = "is_active">
+                {{-- <option value="">Pilih Status</option> --}}
+                @if($dataEmployee->is_active === 1){
+                    <option value = "1" selected > AKTIF </option>
+                    <option value = "0"> TIDAK AKTIF </option>
+                }@elseif($dataEmployee->is_active === 0){
+                    <option value = "1"> AKTIF </option>
+                    <option value = "0" selected> TIDAK AKTIF </option>
+                }
+                @endif
+            </select>
+
+        </div>
+
+        <div class="form-group">
             <label><strong>Perusahaan</strong></label>
             <select id="company" class="form-control" name = "id_company">
                 <option value="">Pilih Perusahaan</option>
@@ -137,7 +163,16 @@
         @error('salary')
             <small>{{ $message }}</small>
         @enderror
-        
+
+        <div class="form-group">
+            <label><strong>Tunjangan Hari Raya</strong></label>
+            <input type="number" id="thr" name="thr" value="{{ old('thr',$dataEmployee->thr? $dataEmployee->thr :0) }}"
+                class="form-control form-control-user" placeholder="Tunjangan Hari Raya" />
+        </div>
+        @error('thr')
+            <small>{{ $message }}</small>
+        @enderror
+
         <div class="form-group">
             <label><strong>Tunjangan SC</strong></label>
             <input type="number" id="sc" name="sc" value="{{ old('sc',$dataEmployee->sc? $dataEmployee->sc :0) }}"
@@ -146,7 +181,7 @@
         @error('salary')
         <small>{{ $message }}</small>
         @enderror
-        
+
         <div class="form-group">
             <label><strong>Tunjangan Natura</strong></label>
             <input type="number" id="natura" name="natura" value="{{ old('natura',$dataEmployee->natura? $dataEmployee->natura :0) }}"
@@ -164,6 +199,7 @@
         @error('bpjs_kesehatan')
             <small>{{ $message }}</small>
         @enderror
+
 
 
         <button type="submit" class="btn btn-primary btn-user btn-block">

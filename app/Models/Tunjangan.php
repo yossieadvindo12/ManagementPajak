@@ -12,6 +12,7 @@ class Tunjangan extends Model
         'id_employee',
         'sc',
         'natura',
-        'bpjs_kesehatan'
+        'bpjs_kesehatan',
+        'thr'
     ];
 }
