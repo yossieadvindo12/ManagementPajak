@@ -50,9 +50,10 @@ class BPJSController extends Controller
         //
 
 
-        $sql ="
-        SELECT
+        $sql ="SELECT
             emp.nama,
+            emp.nik,
+            emp.npwp,
             c.name_company,
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JANUARY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS JANUARY,
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'FEBRUARY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS FEBRUARY,
@@ -65,14 +66,16 @@ class BPJSController extends Controller
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'SEPTEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS SEPTEMBER,
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'OCTOBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS OCTOBER,
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'NOVEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS NOVEMBER,
-        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS DECEMBER
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS DECEMBER,
+        sum(bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm) total
             from bpjs
             LEFT JOIN company AS c
                     ON bpjs.id_company = c.id_company
             left Join employee as emp
-                    on bpjs.nik = emp.nik
+                    on bpjs.id_employee = emp.id
             where year(bpjs.updated_at)=2024
-            group by emp.nama,c.name_company
+            group by emp.nama,c.name_company,emp.nik,
+            emp.npwp
                 ";
         // GROUP BY bpjs.id, emp.nama,bpjs.nik, c.name_company,gaji_pokok,MONTHNAME(bpjs.updated_at),YEAR(bpjs.updated_at)
 
@@ -218,9 +221,10 @@ class BPJSController extends Controller
     public function reportShow($id_company, $year)
     {
         //
-        $sql ="
-        SELECT
+        $sql ="SELECT
             emp.nama,
+            emp.nik,
+            emp.npwp,
             c.name_company,
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JANUARY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS JANUARY,
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'FEBRUARY' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS FEBRUARY,
@@ -234,14 +238,16 @@ class BPJSController extends Controller
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'OCTOBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS OCTOBER,
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'NOVEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS NOVEMBER,
         MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END) AS DECEMBER
-            from bpjs
+        ,(bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm) total    
+        from bpjs
             LEFT JOIN company AS c
                     ON bpjs.id_company = c.id_company
             left Join employee as emp
-                    on bpjs.nik = emp.nik
+                    on bpjs.id_employee = emp.id
             where year(bpjs.updated_at)= :year
             and emp.id_company = :id_company
-            group by emp.nama,c.name_company
+            group by emp.nama,c.name_company,emp.nik,
+            emp.npwp,bpjs.bpjs_kesehatan,bpjs.jkk,bpjs.jkm
                 ";
 
         $dataBPJS = DB::select($sql, ['id_company' => $id_company,'year'=>$year]);
