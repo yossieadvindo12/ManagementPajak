@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Exports\EmployeeExport;
+use App\Imports\EmployeeImport;
+use App\Imports\TunjanganImport;
 use App\Models\Ptkp;
 use App\Models\Salary;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Tunjangan;
+use Illuminate\Contracts\Session\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session as FacadesSession;
 
 class EmployeeController extends Controller
 {
@@ -44,7 +48,9 @@ class EmployeeController extends Controller
         ->join('company', 'employee.id_company', '=', 'company.id_company')
         ->select('employee.nik', 'employee.nama','employee.tempat',
         'employee.tanggal_lahir','employee.alamat','employee.jenis_kelamin',
-        'employee.status_PTKP','employee.kode_karyawan','company.id_company','company.name_company')
+        'employee.status_PTKP','employee.kode_karyawan',
+        'employee.is_active',
+        'company.id_company','company.name_company')
         ->get();
         // $dataEmployee = DB::select($sql);
         $dataPerusahaan = Company::all();
@@ -155,7 +161,8 @@ class EmployeeController extends Controller
 
         $sql="SELECT employee.nik, employee.nama,employee.tempat,
         employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
-        employee.status_PTKP,employee.kode_karyawan,company.id_company,company.name_company,
+        employee.status_PTKP,employee.kode_karyawan,employee.is_active,
+        company.id_company,company.name_company,
         salaries.gaji_pokok, tunjangans.sc,tunjangans.natura,tunjangans.bpjs_kesehatan 
         FROM employee 
         LEFT JOIN company ON employee.id_company=company.id_company
@@ -201,13 +208,14 @@ class EmployeeController extends Controller
             ->where('nik', $nik)
                 ->update([
                     'nama' => $request->nama,
-                    // 'nik' => $request->nik,
+                    'nik' => $request->nik,
                     'tempat' => $request->tempat,
                     'tanggal_lahir' => $request->tanggal_lahir,
                     'alamat' => $request->alamat,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'status_ptkp' => $request->status_PTKP,
                     'kode_karyawan' => $request->kode_karyawan,
+                    'is_active' => $request->is_active,
                     'id_company' => $request->id_company,
                     // 'updated_at' => now() // Assuming you want to update the 'updated_at' column to the current timestamp
         ]);
@@ -249,5 +257,31 @@ class EmployeeController extends Controller
     public function export_excel()
 	{
 		return Excel::download(new EmployeeExport, 'employee.xlsx');
+	}
+
+    public function import_excel(Request $request) 
+	{
+		// validasi
+		$this->validate($request, [
+			'file' => 'required|mimes:csv,xls,xlsx'
+		]);
+ 
+		// get file excel
+		$file = $request->file('file');
+ 
+		// make unique file
+		$nama_file = rand().$file->getClientOriginalName();
+ 
+		// upload ke folder file_tunjangan di dalam folder public
+		$file->move('file_tunjangan',$nama_file);
+ 
+		// import data
+		Excel::import(new TunjanganImport, public_path('/file_tunjangan/'.$nama_file));
+ 
+		// notifikasi dengan session
+		FacadesSession::flash('sukses','Data Berhasil Diimport!');
+ 
+		// alihkan halaman kembali
+		return redirect('/employee');
 	}
 }

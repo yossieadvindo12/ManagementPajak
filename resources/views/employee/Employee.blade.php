@@ -5,6 +5,21 @@
 @section('content')
     <div class="m-4">
         <h1 class="text-center">Data Karyawan</h1>
+        {{-- notifikasi form validasi --}}
+        @if ($errors->has('file'))
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('file') }}</strong>
+        </span>
+        @endif
+
+        {{-- notifikasi sukses --}}
+        @if ($sukses = Session::get('sukses'))
+        <div class="alert alert-success alert-block">
+            <button type="button" class="close" data-dismiss="alert">×</button> 
+            <strong>{{ $sukses }}</strong>
+        </div>
+        @endif
+
         <form id="searchForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->
@@ -27,6 +42,38 @@
         </form>
 
         <a href="/employee/export_excel" class="btn btn-success my-3" target="_blank">EXPORT EXCEL</a>
+        
+        <button type="button" class="btn btn-primary mr-5" data-toggle="modal" data-target="#importExcel">
+			IMPORT EXCEL
+		</button>
+
+
+        <div class="modal fade" id="importExcel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<form method="post" action="/employee/import_excel" enctype="multipart/form-data">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Import Excel</h5>
+						</div>
+						<div class="modal-body">
+ 
+							{{ csrf_field() }}
+ 
+							<label>Pilih file excel</label>
+							<div class="form-group">
+								<input type="file" name="file" required="required">
+							</div>
+ 
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary">Import</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
         <div class="row">
             <table class="table">
                 <thead>
@@ -39,6 +86,7 @@
                         <th scope="col">Jenis Kelamin</th>
                         <th scope="col">Status PTKP</th>
                         <th scope="col">Status Karyawan</th>
+                        <th scope="col">Apakah Karyawan Aktif</th>
                         <th scope="col">Perusahaan</th>
                         {{-- <th scope="col">Perusahaan</th> --}}
                         <th scope="col">Aksi</th>
@@ -55,6 +103,7 @@
                         <td>{{ $item->alamat }}</td>
                         <td>{{ $item->jenis_kelamin }}</td>
                         <td>{{ $item->status_PTKP }}</td>
+                        <td>{{ $item->is_active === 1? 'Aktif': 'Tidak Aktif' }}</td>
                         <td>{{ $item->kode_karyawan }}</td>
                         <td>{{ $item->name_company}}</td>
                         

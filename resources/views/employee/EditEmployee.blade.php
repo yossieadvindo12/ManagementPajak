@@ -19,13 +19,23 @@
     <form class="user" action="{{ route('employee.update', $dataEmployee->nik) }}" method="post">
         @csrf
         @method('PUT')
-        {{-- <div class="form-group">
+        <div class="form-group">
+            <label><strong>NPWP</strong></label>
+            <input type="text" name="npwp" class="form-control form-control-user"
+                placeholder="NPWP" value="{{ $dataEmployee->npwp }}">
+        </div>
+        @error('nik')
+            <small>{{ $message }}</small>
+        @enderror
+        
+        <div class="form-group">
+            <label><strong>NIK</strong></label>
             <input type="text" name="nik" class="form-control form-control-user"
                 placeholder="NIK" value="{{ $dataEmployee->nik }}">
         </div>
         @error('nik')
             <small>{{ $message }}</small>
-        @enderror --}}
+        @enderror
 
         <div class="form-group">
             <label><strong>Nama Karyawan</strong></label>
@@ -111,6 +121,22 @@
                     {{-- <option value="{{ $item->id_company }}" selected>{{ $dataEmployee->id_company }}</option> --}}
                 @endforeach
             </select>
+        </div>
+
+        <div class="form-group">
+            <label><strong>Apakah Karyawan Aktif?</strong></label>
+            <select id="is_active" class="form-control" name = "is_active">
+                {{-- <option value="">Pilih Status</option> --}}
+                @if($dataEmployee->is_active === 1){
+                    <option value = "1" selected > AKTIF </option>
+                    <option value = "0"> TIDAK AKTIF </option>
+                }@elseif($dataEmployee->is_active === 0){
+                    <option value = "1"> AKTIF </option>
+                    <option value = "0" selected> TIDAK AKTIF </option>
+                }
+                @endif
+            </select>
+         
         </div>
 
         <div class="form-group">
