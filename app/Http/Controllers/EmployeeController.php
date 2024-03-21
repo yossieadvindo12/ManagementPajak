@@ -40,14 +40,23 @@ class EmployeeController extends Controller
         //     AS tunjangans ON employee.nik=tunjangans.nik
         // ";
 
-        $dataEmployee = DB::table('employee')
-        ->join('company', 'employee.id_company', '=', 'company.id_company')
-        ->join('salaries', 'employee.id', '=', 'salaries.id_employee')
-        ->select('employee.id', 'employee.npwp', 'employee.nik', 'employee.nama','employee.tempat',
-        'employee.tanggal_lahir','employee.alamat','employee.jenis_kelamin',
-        'employee.status_PTKP','employee.kode_karyawan','company.id_company','company.name_company')
-        ->get();
+        // $dataEmployee = DB::table('employee')
+        // ->join('company', 'employee.id_company', '=', 'company.id_company')
+        // ->join('salaries', 'employee.id', '=', 'salaries.id_employee')
+        // ->select('employee.id', 'employee.npwp', 'employee.nik', 'employee.nama','employee.tempat',
+        // 'employee.tanggal_lahir','employee.alamat','employee.jenis_kelamin',
+        // 'employee.status_PTKP','employee.kode_karyawan','company.id_company','company.name_company')
+        // ->get();
         // $dataEmployee = DB::select($sql);
+
+        $sql ="SELECT employee.id, employee.npwp, employee.nik, employee.nama,employee.tempat,
+        employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
+        employee.status_PTKP,employee.kode_karyawan,company.id_company,company.name_company
+        FROM employee 
+        LEFT JOIN company ON employee.id_company=company.id_company
+        ";
+
+        $dataEmployee = DB::select($sql);
         $dataPerusahaan = Company::all();
         return view('employee.Employee',compact('dataEmployee','dataPerusahaan'));
     }

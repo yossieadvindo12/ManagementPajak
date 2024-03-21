@@ -14,9 +14,9 @@
                         <label><strong>Perusahaan</strong></label>
                         <select id="company" class="form-control" name="id_company">
                             <option value="">Pilih Perusahaan</option>
-                            {{-- @foreach ($dataPerusahaan as $item)
+                            @foreach ($dataPerusahaan as $item)
                             <option value="{{ $item->id_company }}">{{ $item->name_company }}</option>
-                            @endforeach --}}
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group ml-3">
@@ -56,6 +56,8 @@
                 <thead>
                     <tr>
                         <th scope="col">Nama</th>
+                        <th scope="col">NIK</th>
+                        <th scope="col">NPWP</th>
                         <th scope="col">Nama Perusahaan</th>
                         <th scope="col">JANUARY</th>
                         <th scope="col">FEBRUARY</th>
@@ -69,6 +71,7 @@
                         <th scope="col">OCTOBER</th>
                         <th scope="col">NOVEMBER</th>
                         <th scope="col">DECEMBER</th>
+                        <th scope="col">Total</th>
                         {{-- <th scope="col">Aksi</th> --}}
                     </tr>
                 </thead>
@@ -76,6 +79,8 @@
                     @foreach ($dataBPJS as $item)
                         <tr>
                             <th scope="row">{{ $item->nama }}</th>
+                            <td>{{ $item->nik }}</td>
+                            <td>{{ $item->npwp }}</td>
                             <td>{{ $item->name_company }}</td>
                             <td>Rp. {{ number_format($item->JANUARY,'0',',','.') }}</td>
                             <td>Rp. {{ number_format($item->FEBRUARY,'0',',','.') }}</td>
@@ -89,6 +94,7 @@
                             <td>Rp. {{ number_format($item->OCTOBER,'0',',','.') }}</td>
                             <td>Rp. {{ number_format($item->NOVEMBER,'0',',','.') }}</td>
                             <td>Rp. {{ number_format($item->DECEMBER,'0',',','.') }}</td>
+                            <td>Rp. {{ number_format($item->total,'0',',','.') }}</td>
                             {{-- <td>Pelukis</td> --}}
 
                         </tr>

@@ -151,7 +151,7 @@ class Phh21Controller extends Controller
     company AS c 
     ON emp.id_company = c.id_company 
     left join 
-    (select id_employee, nik, npwp, gaji_pokok, jkm, jkk,bpjs_kesehatan, max(updated_at) as max_updated_at  from bpjs where MONTH(updated_at)<= :monthnum5 group  by id_employee, nik, npwp, gaji_pokok, jkm, jkk,bpjs_kesehatan) as b 
+    (select id_employee, nik, npwp, gaji_pokok, jkm, jkk,bpjs_kesehatan, max(updated_at) as max_updated_at  from bpjs where MONTH(updated_at)= :monthnum5 group  by id_employee, nik, npwp, gaji_pokok, jkm, jkk,bpjs_kesehatan) as b 
     on emp.id = b.id_employee 
     LEFT JOIN 
     (SELECT id_employee, nik, npwp,sc, natura, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= :monthnum4 GROUP BY id_employee, nik, npwp,sc, natura) AS max_tunjangans
