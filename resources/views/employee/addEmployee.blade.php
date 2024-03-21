@@ -37,6 +37,14 @@
                     <form id="formEmployee" class="user " action="/storeEmployee" method="post">
                         @csrf
                         <div class="form-group">
+                            <label><strong>NPWP</strong></label>
+                            <input type="text" name="npwp" id="npwp" value=""
+                                class="form-control form-control-user" placeholder="npwp" />
+                        </div>
+                        @error('npwp')
+                            <small>{{ $message }}</small>
+                        @enderror
+                        <div class="form-group">
                             <label><strong>NIK</strong></label>
                             <input type="text" name="nik" id="nik" value=""
                                 class="form-control form-control-user" placeholder="NIK" />
@@ -140,6 +148,15 @@
                                 class="form-control form-control-user" placeholder="Tunjangan Natura" />
                         </div>
                         @error('natura')
+                        <small>{{ $message }}</small>
+                        @enderror
+
+                        <div class="form-group">
+                            <label><strong>Tunjangan Hari Raya</strong></label>
+                            <input type="text" id="thr" name="thr" value="{{ old('thr') }}"
+                                class="form-control form-control-user" placeholder="Tunjangan Hari Raya" />
+                        </div>
+                        @error('thr')
                         <small>{{ $message }}</small>
                         @enderror
 

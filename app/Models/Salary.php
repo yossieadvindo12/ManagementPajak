@@ -9,7 +9,7 @@ class Salary extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nik',
+        'id_employee',
         'gaji_pokok'
     ];
 }

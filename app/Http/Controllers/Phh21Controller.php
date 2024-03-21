@@ -16,7 +16,7 @@ class Phh21Controller extends Controller
     {
         //
         $sql = "SELECT 
-        id,
+        emp.id,
         emp.nama,
         emp.nik,
         c.name_company,
@@ -33,7 +33,7 @@ class Phh21Controller extends Controller
         YEAR(phh21s.updated_at) AS year
         FROM phh21s 
         LEFT JOIN company AS c ON phh21s.id_company = c.id_company
-        left Join employee as emp on phh21s.nik = emp.nik
+        left Join employee as emp on phh21s.id_employee = emp.id
         ";
         // GROUP BY bpjs.id, emp.nama,bpjs.nik, c.name_company,gaji_pokok,MONTHNAME(bpjs.updated_at),YEAR(bpjs.updated_at)
 
@@ -48,7 +48,7 @@ class Phh21Controller extends Controller
 
 
         $sql = "SELECT 
-        id,
+        emp.id,
         emp.nama,
         emp.nik,
         c.name_company,
@@ -57,7 +57,7 @@ class Phh21Controller extends Controller
       	sc,
         natura,
         gaji_bruto,
-        `Ter alias` as ter_alias,
+        `Ter alias`  as ter_alias,
         pph21,
         thp,
         gross_up,
@@ -65,7 +65,7 @@ class Phh21Controller extends Controller
         YEAR(phh21s.updated_at) AS year
         FROM phh21s 
         LEFT JOIN company AS c ON phh21s.id_company = c.id_company
-        left Join employee as emp on phh21s.nik = emp.nik
+        left Join employee as emp on phh21s.id_employee = emp.id
         ";
         // GROUP BY bpjs.id, emp.nama,bpjs.nik, c.name_company,gaji_pokok,MONTHNAME(bpjs.updated_at),YEAR(bpjs.updated_at)
 
@@ -105,7 +105,8 @@ class Phh21Controller extends Controller
         
 
         // if (!$exists) {
-        $sql = "INSERT INTO phh21s (nik, 
+        $sql = "INSERT INTO phh21s (id_employee,
+        nik,npwp, 
         id_company, 
         gaji_pokok, 
         A5, 
@@ -121,7 +122,9 @@ class Phh21Controller extends Controller
         updated_at
         )
         (SELECT 
+        emp.id,
     emp.nik, 
+    emp.npwp,
     c.id_company, 
     s.gaji_pokok, 
     b.jkm + b.jkk + b.bpjs_kesehatan AS a5,  
@@ -139,23 +142,23 @@ class Phh21Controller extends Controller
     FROM 
     employee AS emp 
     LEFT JOIN 
-    (SELECT nik, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= :monthnum3 GROUP BY nik) AS max_salaries
-    ON emp.nik = max_salaries.nik
+    (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= :monthnum3 GROUP BY id_employee, nik, npwp) AS max_salaries
+    ON emp.id = max_salaries.id_employee
     LEFT JOIN 
     salaries AS s 
-    ON emp.nik = s.nik AND s.updated_at = max_salaries.max_updated_at
+    ON emp.id = s.id_employee AND s.updated_at = max_salaries.max_updated_at
     LEFT JOIN 
     company AS c 
     ON emp.id_company = c.id_company 
     left join 
-    (select nik, gaji_pokok, jkm, jkk,bpjs_kesehatan, max(updated_at) as max_updated_at  from bpjs where MONTH(updated_at)<= :monthnum5 group  by nik, gaji_pokok, jkm, jkk,bpjs_kesehatan) as b 
-    on emp.nik = b.nik 
+    (select id_employee, nik, npwp, gaji_pokok, jkm, jkk,bpjs_kesehatan, max(updated_at) as max_updated_at  from bpjs where MONTH(updated_at)= :monthnum5 group  by id_employee, nik, npwp, gaji_pokok, jkm, jkk,bpjs_kesehatan) as b 
+    on emp.id = b.id_employee 
     LEFT JOIN 
-    (SELECT nik,sc, natura, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= :monthnum4 GROUP BY nik,sc, natura) AS max_tunjangans
-    ON emp.nik = max_tunjangans.nik
+    (SELECT id_employee, nik, npwp,sc, natura, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= :monthnum4 GROUP BY id_employee, nik, npwp,sc, natura) AS max_tunjangans
+    ON emp.id = max_tunjangans.id_employee
     LEFT JOIN 
     tunjangans AS t 
-    ON emp.nik = t.nik AND t.updated_at = max_tunjangans.max_updated_at
+    ON emp.id = t.id_employee AND t.updated_at = max_tunjangans.max_updated_at
 LEFT JOIN ter ON 
     CASE emp.status_PTKP
     WHEN 'K/3' THEN 'TER C'
@@ -169,9 +172,9 @@ LEFT JOIN ter ON
         WHEN 'K/3' THEN 'TER C'
         ELSE NULL
     END = ter.Ter
-        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT null 
+        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT null and emp.is_active = 1
         and s.gaji_pokok BETWEEN min AND ifnull(max,9999999999)
-        GROUP BY emp.nik, c.id_company, s.gaji_pokok, t.bpjs_kesehatan,b.jkm, b.jkk , b.bpjs_kesehatan , max_tunjangans.sc,
+        GROUP BY emp.id,emp.npwp,emp.nik, c.id_company, s.gaji_pokok, t.bpjs_kesehatan,b.jkm, b.jkk , b.bpjs_kesehatan , max_tunjangans.sc,
     max_tunjangans.natura,managementpajak.ter.`Ter alias`,managementpajak.ter.presentase)";
     
     DB::insert($sql, [
@@ -192,7 +195,7 @@ LEFT JOIN ter ON
     {
         //
         $sql = "SELECT 
-        id,
+        emp.id,
         emp.nama,
         emp.nik,
         c.name_company,
@@ -209,7 +212,7 @@ LEFT JOIN ter ON
         YEAR(phh21s.updated_at) AS year
         FROM phh21s 
         LEFT JOIN company AS c ON phh21s.id_company = c.id_company
-        left Join employee as emp on phh21s.nik = emp.nik
+        left Join employee as emp on phh21s.id_employee = emp.id
         WHERE emp.id_company = :id_company and MONTH(phh21s.updated_at) = :monthnum and keterangan_pph= :keterangan_pph";
 
         $dataPPH21 = DB::select($sql, ['id_company' => $id_company,'monthnum'=> $monthnum, 'keterangan_pph' => $keterangan_pph]);
@@ -239,7 +242,7 @@ LEFT JOIN ter ON
         YEAR(phh21s.updated_at) AS year
         FROM phh21s 
         LEFT JOIN company AS c ON phh21s.id_company = c.id_company
-        left Join employee as emp on phh21s.nik = emp.nik
+        left Join employee as emp on phh21s.id_employee = emp.id
         WHERE emp.id_company = :id_company";
 
         $dataPPH21 = DB::select($sql, ['id_company' => $id_company]);
