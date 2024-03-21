@@ -3,14 +3,14 @@
 namespace App\Imports;
 
 use App\Models\Employee;
-use App\Models\Tunjangan;
+use App\Models\Salary;
 use App\Siswa;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithUpsertColumns;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 
-class TunjanganImport implements ToModel, WithHeadingRow
+class SalaryImport implements ToModel, WithHeadingRow
 {
     /**
     * @param array $row
@@ -19,14 +19,11 @@ class TunjanganImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        return new Tunjangan([
+        return new Salary([
             'id_employee' => $row['id_employee'],
             'nik' => $row['nik'],
             'npwp' => $row['npwp'],
-            'sc' => $row['sc'],
-            'natura' => $row['natura'],
-            'bpjs_kesehatan' => $row['bpjs_kesehatan']
-            'thr' => $row['thr']
+            'gaji_pokok' => $row['gaji_pokok']
         ]);
     }
 
