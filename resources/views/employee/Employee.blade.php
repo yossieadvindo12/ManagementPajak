@@ -15,7 +15,7 @@
         {{-- notifikasi sukses --}}
         @if ($sukses = Session::get('sukses'))
         <div class="alert alert-success alert-block">
-            <button type="button" class="close" data-dismiss="alert">×</button> 
+            <button type="button" class="close" data-dismiss="alert">×</button>
             <strong>{{ $sukses }}</strong>
         </div>
         @endif
@@ -42,7 +42,7 @@
         </form>
 
         <a href="/employee/export_excel" class="btn btn-success my-3" target="_blank">EXPORT EXCEL</a>
-        
+
         <button type="button" class="btn btn-primary mr-5" data-toggle="modal" data-target="#importExcel">
 			IMPORT EXCEL
 		</button>
@@ -56,14 +56,14 @@
 							<h5 class="modal-title" id="exampleModalLabel">Import Excel</h5>
 						</div>
 						<div class="modal-body">
- 
+
 							{{ csrf_field() }}
- 
+
 							<label>Pilih file excel</label>
 							<div class="form-group">
 								<input type="file" name="file" required="required">
 							</div>
- 
+
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -88,13 +88,17 @@
                         <th scope="col">Status Karyawan</th>
                         <th scope="col">Apakah Karyawan Aktif</th>
                         <th scope="col">Perusahaan</th>
+                        <th scope="col">Gaji</th>
+                        {{-- <th scope="col">SC</th>
+                        <th scope="col">Natura</th>
+                        <th scope="col">BPJS Kesehatan</th> --}}
                         {{-- <th scope="col">Perusahaan</th> --}}
                         <th scope="col">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($dataEmployee as $item)
-                        
+
                     <tr>
                         {{-- <th scope="row">{{ $item->id }}</th> --}}
                         <td>{{ $item->nik }}</td>
@@ -106,9 +110,13 @@
                         <td>{{ $item->is_active === 1? 'Aktif': 'Tidak Aktif' }}</td>
                         <td>{{ $item->kode_karyawan }}</td>
                         <td>{{ $item->name_company}}</td>
-                        
+                        <td>Rp. {{ number_format($item->gaji_pokok,'0',',','.')}}</td>
+                        {{-- <td>{{ $item->sc}}</td>
+                        <td>{{ $item->natura}}</td>
+                         <td>{{ $item->bpjs_kesehatan}}</td> --}}
+
                         <td>
-                            <button type="button" class="btn btn-warning"> 
+                            <button type="button" class="btn btn-warning">
                                 <a class="text-decoration-none text-light" href="{{ route('employee.edit', $item->id) }}">Edit</a>
                             </button>
                         </td>
@@ -123,13 +131,13 @@
         function submitForm(action) {
             var form = document.getElementById('searchForm');
             var companyId = document.getElementById('company').value;
-    
+
             if (companyId === '') {
                 // Handle case where no company is selected
                 alert('Please select a company.');
                 return;
             }
-    
+
             if (action === 'show') {
                 // Redirect to showEmployee route
                 window.location.href = "{{ url('showEmployee') }}/" + companyId;
