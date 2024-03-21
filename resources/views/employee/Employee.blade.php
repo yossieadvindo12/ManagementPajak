@@ -109,7 +109,7 @@
                         
                         <td>
                             <button type="button" class="btn btn-warning"> 
-                                <a class="text-decoration-none text-light" href="{{ route('employee.edit', $item->nik) }}">Edit</a>
+                                <a class="text-decoration-none text-light" href="{{ route('employee.edit', $item->id) }}">Edit</a>
                             </button>
                         </td>
                     </tr>

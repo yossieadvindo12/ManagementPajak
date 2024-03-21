@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('phh21s', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('nik');
+            $table->integer('id_employee');
+            $table->unsignedBigInteger('nik')->nullable();
+            $table->unsignedBigInteger('npwp')->nullable();
             $table->integer('id_company');
             $table->integer('gaji_pokok');
             $table->integer('A5')->nullable();

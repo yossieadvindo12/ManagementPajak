@@ -16,7 +16,7 @@
             {{ Session::get('success') }}
         </div>
     @endif
-    <form class="user" action="{{ route('employee.update', $dataEmployee->nik) }}" method="post">
+    <form class="user" action="{{ route('employee.update', $dataEmployee->id) }}" method="post">
         @csrf
         @method('PUT')
         <div class="form-group">

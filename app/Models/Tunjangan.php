@@ -9,7 +9,7 @@ class Tunjangan extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nik',
+        'id_employee',
         'sc',
         'natura',
         'bpjs_kesehatan'
