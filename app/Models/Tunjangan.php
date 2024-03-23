@@ -13,6 +13,7 @@ class Tunjangan extends Model
         'sc',
         'natura',
         'bpjs_kesehatan',
-        'thr'
+        'thr',
+        'lain_lain'
     ];
 }

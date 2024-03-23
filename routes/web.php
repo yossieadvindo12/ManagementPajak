@@ -6,6 +6,7 @@ use App\Http\Controllers\BPJSController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Phh21Controller;
+use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RegisterController;
@@ -65,6 +66,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/company/{item}/edit', [CompanyController::class,'edit'])->name('company.edit');
     Route::put('/company/{company}',  [CompanyController::class,'update'])->name('company.update');
     Route::delete('company/{id_company}', [CompanyController::class,'destroy'] )->name('company.destroy');
+
+    Route::get('/reportSalary',[SalaryController::class,'index'])->name('reportSalary');
+    Route::get('/reportSalary/{id_company}/{year}', [SalaryController::class,'reportShow'])->name('reportSalary');
 });
 
 

@@ -168,6 +168,14 @@
                         @error('bpjs_kesehatan')
                             <small>{{ $message }}</small>
                         @enderror
+                        <div class="form-group">
+                            <label><strong>Tunjangan Lain-lain</strong></label>
+                            <input type="text" id="lain_lain" name="lain_lain" value="{{ old('lain_lain') }}"
+                                class="form-control form-control-user" placeholder="Tunjangan Lain-lain" />
+                        </div>
+                        @error('lain_lain')
+                            <small>{{ $message }}</small>
+                        @enderror
                         <button type="submit" class="btn btn-primary btn-user btn-block">Tambah</button>
                     </form>
                 </div>
