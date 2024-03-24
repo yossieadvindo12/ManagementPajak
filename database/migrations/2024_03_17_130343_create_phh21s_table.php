@@ -21,6 +21,8 @@ return new class extends Migration
             $table->integer('A5')->nullable();
             $table->integer('sc')->nullable();
             $table->integer('natura')->nullable();
+            $table->integer('thr')->nullable();
+            $table->integer('lain_lain')->nullable();
             $table->integer('gaji_bruto');
             $table->string("Ter alias");
             $table->integer('pph21');

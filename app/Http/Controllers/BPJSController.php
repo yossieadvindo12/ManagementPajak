@@ -91,27 +91,22 @@ class BPJSController extends Controller
     {
         //
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
         //
-
+        
         $request->validate([
             'id_company'  => 'required|integer',
             'month' => 'required|integer'
-
+            
         ]);
+        
+        DB::delete("DELETE FROM bpjs WHERE WHERE id_company= :id_company and MONTH(updated_at) = :month and YEAR(updated_at)=YEAR(NOW())", ['id_company' => $request->id_company, 'month' => $request->month]);
 
-        // $exists = DB::table('bpjs')
-        // ->where('id_company', $request->id_company)
-        // ->whereRaw('MONTH(updated_at) = ?', [$request->month])
-        // ->exists();
-
-
-        // if (!$exists) {
         $sql = "INSERT INTO bpjs (id_employee,
         nik,npwp,
         id_company,
@@ -182,13 +177,7 @@ class BPJSController extends Controller
 
 
         return redirect()->route('showBpjs', ['id_company' => $request->id_company, 'monthnum'=> $request->month ])->with('succes','data berhasil ditambahkan');
-// }else {
-//     // Handle exceptions, for example:
-//         return back()->with([
-//             'error' => 'Error, Data bpjs Sudah terdapat didatabase.'
-//         ]);
 
-//     }
 }
 
     /**
@@ -263,6 +252,81 @@ class BPJSController extends Controller
         return view('bpjs.reportBpjs', compact('dataBPJS','dataPerusahaan'));
     }
 
+    public function reportKaryawanIndex()
+    {
+        //
+
+
+        $sql ="SELECT
+        emp.nama,
+        emp.nik,
+        emp.npwp,
+        c.name_company,
+        MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JANUARY' THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END) AS JANUARY,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'FEBRUARY' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS FEBRUARY,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MARCH' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS MARCH,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'APRIL' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS APRIL,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MAY' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS MAY,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JUNE' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS JUNE,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JULY' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS JULY,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'AUGUST' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS AUGUST,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'SEPTEMBER' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS SEPTEMBER,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'OCTOBER' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS OCTOBER,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'NOVEMBER' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS NOVEMBER,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS DECEMBER,
+    sum(bpjs.jht_karyawan+bpjs.jp_karyawan ) total
+        from bpjs
+        LEFT JOIN company AS c
+                ON bpjs.id_company = c.id_company
+        left Join employee as emp
+                on bpjs.id_employee = emp.id
+        where year(bpjs.updated_at)=2024
+        group by emp.nama,c.name_company,emp.nik,
+        emp.npwp
+                ";
+        // GROUP BY bpjs.id, emp.nama,bpjs.nik, c.name_company,gaji_pokok,MONTHNAME(bpjs.updated_at),YEAR(bpjs.updated_at)
+
+        $dataBPJS = DB::select($sql);
+        $dataPerusahaan = Company::all();
+        return view('bpjs.reportBpjsKaryawan',compact('dataBPJS','dataPerusahaan'));
+    }
+    public function reportKaryawanShow($id_company, $year)
+    {
+        //
+        $sql ="SELECT
+        emp.nama,
+        emp.nik,
+        emp.npwp,
+        c.name_company,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JANUARY' THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END) AS JANUARY,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'FEBRUARY' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS FEBRUARY,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MARCH' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS MARCH,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'APRIL' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS APRIL,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MAY' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS MAY,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JUNE' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS JUNE,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JULY' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS JULY,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'AUGUST' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS AUGUST,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'SEPTEMBER' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS SEPTEMBER,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'OCTOBER' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS OCTOBER,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'NOVEMBER' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS NOVEMBER,
+    MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.jht_karyawan+bpjs.jp_karyawan  ELSE 0 END) AS DECEMBER,
+    sum(bpjs.jht_karyawan+bpjs.jp_karyawan ) total
+        from bpjs
+        LEFT JOIN company AS c
+                ON bpjs.id_company = c.id_company
+        left Join employee as emp
+                on bpjs.id_employee = emp.id
+        where year(bpjs.updated_at)= :year_num
+        and emp.id_company = :id_company
+        group by emp.nama,c.name_company,emp.nik,
+        emp.npwp
+                ";
+
+        $dataBPJS = DB::select($sql, ['id_company' => $id_company,'year_num'=>$year]);
+        $dataPerusahaan = Company::all();
+        // Pass the data to the view to display
+        return view('bpjs.reportBpjsKaryawan', compact('dataBPJS','dataPerusahaan'));
+    }
     /**
      * Show the form for editing the specified resource.
      */

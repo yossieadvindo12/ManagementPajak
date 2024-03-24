@@ -4,7 +4,7 @@
 @section('content-wrapper')
 @section('content')
     <div class="m-4  ">
-        <h1 class="text-center">Laporan Gaji Bruto</h1>
+        <h1 class="text-center">Laporan PPH 21 </h1>
         <form id="bpjsForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->

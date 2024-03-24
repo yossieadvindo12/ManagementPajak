@@ -61,7 +61,14 @@
         <li class="nav-item">
             <a class="nav-link" href="/reportBpjs">
                 <i class="fas fa-fw fa fa-file-alt"></i>
-                <span>Laporan BPJS</span>
+                <span>Laporan BPJS A5</span>
+            </a>
+            
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/reportBpjsKaryawan">
+                <i class="fas fa-fw fa fa-file-alt"></i>
+                <span>Laporan BPJS A10</span>
             </a>
 
         </li>
@@ -80,6 +87,32 @@
             </a>
 
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="/reportPph21">
+                <i class="fas fa-fw fa fa-file-alt"></i>
+                <span>Laporan PPH 21 Tahunan</span>
+            </a>
+
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="/reportPphTHR">
+                <i class="fas fa-fw fa fa-file-alt"></i>
+                <span>Laporan PPH 21 THR</span>
+            </a>
+
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="/reportTHR">
+                <i class="fas fa-fw fa fa-file-alt"></i>
+                <span>Laporan THR</span>
+            </a>
+
+        </li>
+
+        
 
     </div>
 

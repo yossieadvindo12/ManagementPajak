@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer("min");
             $table->integer("max")->nullable();
-            $table->float("presentase");
+            $table->double('presentase', 15, 4);
+            $table->double("presentase");
             $table->string("Ter");
             $table->string("Ter alias");
             $table->timestamps();

@@ -4,7 +4,7 @@
 @section('content-wrapper')
 @section('content')
     <div class="m-4  ">
-        <h1 class="text-center">Laporan Gaji Bruto</h1>
+        <h1 class="text-center">Laporan BPJS A10</h1>
         <form id="bpjsForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->
@@ -76,7 +76,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($dataSalary as $item)
+                    @foreach ($dataBPJS as $item)
                         <tr>
                             <th scope="row">{{ $item->nama }}</th>
                             <td>{{ $item->nik }}</td>
@@ -117,7 +117,7 @@
     
             if (action === 'show') {
                 // Redirect to showBpjs route
-                window.location.href = "{{ url('reportSalary') }}/" + companyId +'/'+year;
+                window.location.href = "{{ url('reportBpjsKaryawan') }}/" + companyId +'/'+year;
             
             }
         }
