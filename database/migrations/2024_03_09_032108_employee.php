@@ -23,11 +23,12 @@ return new class extends Migration
             $table->boolean('is_active');
             $table->string('status_PTKP');
             $table->enum('kode_karyawan', ['karyawan', 'tukang']);
+            $table->string('status_BPJS');
             $table->integer('id_company')->references('id_company')->on('company')->restrictOnDelete();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
         });
-        
+
     }
 
     /**

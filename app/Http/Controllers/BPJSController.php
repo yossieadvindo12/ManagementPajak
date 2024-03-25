@@ -91,21 +91,21 @@ class BPJSController extends Controller
     {
         //
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
         //
-        
+
         $request->validate([
             'id_company'  => 'required|integer',
             'month' => 'required|integer'
-            
+
         ]);
-        
-        DB::delete("DELETE FROM bpjs WHERE WHERE id_company= :id_company and MONTH(updated_at) = :month and YEAR(updated_at)=YEAR(NOW())", ['id_company' => $request->id_company, 'month' => $request->month]);
+
+        DB::delete("DELETE FROM bpjs WHERE id_company= :id_company and MONTH(updated_at) = :month and YEAR(updated_at)=YEAR(NOW())", ['id_company' => $request->id_company, 'month' => $request->month]);
 
         $sql = "INSERT INTO bpjs (id_employee,
         nik,npwp,
@@ -128,16 +128,21 @@ class BPJSController extends Controller
     emp.nik,
     emp.npwp,
     c.id_company,
-    max(s.gaji_pokok),
-    max(s.gaji_pokok) * 0.02 AS jht_karyawan,
-    max(s.gaji_pokok) * 0.037 AS jht_pt,
-    max(s.gaji_pokok) * 0.0030 AS jkm,
-    max(s.gaji_pokok) * 0.0054 AS jkk,
-    max(s.gaji_pokok) * 0.01 AS jp_karyawan,
-    max(s.gaji_pokok) * 0.02 AS jp_pt,
+    if(emp.status_BPJS = 1,max(s.gaji_pokok),0),
+    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.02 AS jht_karyawan,
+    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.037 AS jht_pt,
+    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.0030 AS jkm,
+    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.0054 AS jkk,
+    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.01 AS jp_karyawan,
+    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.02 AS jp_pt,
     IF(t.bpjs_kesehatan IS NULL, 0, max(t.bpjs_kesehatan)) AS bpjs_kesehatan,
-    (s.gaji_pokok * 0.02) + (s.gaji_pokok * 0.01) AS ditanggung_karyawan,
-    (s.gaji_pokok * 0.037) + (s.gaji_pokok * 0.0030) + (s.gaji_pokok * 0.0054) + (s.gaji_pokok * 0.02) + IF(max(t.bpjs_kesehatan) IS NULL, 0, max(t.bpjs_kesehatan)) AS ditanggung_pt,
+    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.02),0) +
+    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.01),0) AS ditanggung_karyawan,
+    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.037),0) +
+    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.0030),0) +
+    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.0054),0) +
+    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.02),0) +
+    IF(max(t.bpjs_kesehatan) IS NULL, 0, max(t.bpjs_kesehatan)) AS ditanggung_pt,
     DATE_FORMAT(CONCAT(YEAR(NOW()), CONCAT('-', :monthnum1), '-01'), '%Y-%m-%d') AS created_at,
     DATE_FORMAT(CONCAT(YEAR(NOW()), CONCAT('-', :monthnum2), '-01'), '%Y-%m-%d') AS updated_at
     FROM
@@ -145,7 +150,7 @@ class BPJSController extends Controller
     LEFT JOIN
     (SELECT distinct id_employee,MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= :monthnum3 GROUP BY id_employee) AS max_salaries
     ON emp.id = max_salaries.id_employee
-    left join 
+    left join
     salaries s on emp.id = s.id_employee and s.updated_at = max_salaries.max_updated_at
     LEFT JOIN
     company AS c
@@ -153,16 +158,16 @@ class BPJSController extends Controller
     LEFT JOIN
     (SELECT distinct id_employee,MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= :monthnum4 GROUP BY id_employee) AS max_tunjangans
     ON emp.id = max_tunjangans.id_employee
-    left join 
+    left join
     tunjangans t on emp.id = t.id_employee  and t.updated_at = max_tunjangans.max_updated_at
-        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT NULL 
-        and emp.id in (SELECT id 
-            FROM employee 
-            WHERE 
+        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT NULL
+        and emp.id in (SELECT id
+            FROM employee
+            WHERE
                 (is_active = 1 AND (MONTH(updated_at) IS NULL OR MONTH(updated_at) <= :monthnum5))
-                OR 
+                OR
                 (is_active = 0 AND (MONTH(updated_at) IS NULL OR MONTH(updated_at) > :monthnum6))
-            ) 
+            )
         GROUP BY emp.id,emp.nik,emp.npwp, c.id_company,  t.bpjs_kesehatan)";
 
     DB::insert($sql, [

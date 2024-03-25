@@ -136,7 +136,21 @@
                 }
                 @endif
             </select>
+        </div>
 
+        <div class="form-group">
+            <label><strong>BPJS Tenaga Kerja</strong></label>
+            <select id="status_BPJS" class="form-control" name = "status_BPJS">
+                {{-- <option value="">Pilih Status</option> --}}
+                @if($dataEmployee->status_BPJS === 1){
+                    <option value = "1" selected > AKTIF </option>
+                    <option value = "0"> TIDAK AKTIF </option>
+                }@elseif($dataEmployee->status_BPJS === 0){
+                    <option value = "1"> AKTIF </option>
+                    <option value = "0" selected> TIDAK AKTIF </option>
+                }
+                @endif
+            </select>
         </div>
 
         <div class="form-group">

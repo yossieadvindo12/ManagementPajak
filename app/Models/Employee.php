@@ -23,6 +23,7 @@ class Employee extends Model
         'is_active',
         'status_ptkp',
         'kode_karyawan',
+        'status_bpjs',
         'id_company'
     ];
     protected $table = 'employee';

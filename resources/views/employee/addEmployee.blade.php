@@ -31,7 +31,7 @@
                         </div>
                         <button class="btn btn-success mt-3" type="submit" name="submit">Upload & OCR</button>
                     </form>
-                    
+
                     <div class=" mt-5" id="ocrResult"></div>
 
                     <form id="formEmployee" class="user " action="/storeEmployee" method="post">
@@ -113,9 +113,16 @@
                             <select id='ptkp' class="form-control" name ="status_ptkp">
                                 <option value="">Pilih Status PTKP</option>
                                 @foreach ($dataPtkp as $item)
-                                
+
                                 <option value="{{  $item->ptkp}}">{{ $item->ptkp }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>BPJS Tenaga Kerja</strong></label>
+                            <select class="form-control" name = "status_bpjs">
+                                <option value = "1" > AKTIF </option>
+                                <option value = "0"> TIDAK AKTIF </option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -123,7 +130,7 @@
                             <select id="company" class="form-control" name = "id_company">
                                 <option value="">Pilih Perusahaan</option>
                                 @foreach ($dataPerusahaan as $item)
-                                
+
                                 <option value="{{  $item->id_company}}">{{ $item->name_company }}</option>
                                 @endforeach
                             </select>
