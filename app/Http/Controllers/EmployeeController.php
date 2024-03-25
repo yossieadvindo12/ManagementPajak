@@ -29,20 +29,30 @@ class EmployeeController extends Controller
     {
         //
         // $dataEmployee = Employee::all();
-        $sql="SELECT employee.id,employee.nik, employee.nama,employee.tempat,
-        employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
-        employee.status_PTKP,employee.kode_karyawan,employee.is_active,company.name_company,
-        salaries.gaji_pokok, tunjangans.sc,tunjangans.natura,tunjangans.bpjs_kesehatan
-        FROM employee
-        LEFT JOIN company ON employee.id_company=company.id_company
+        $sql="   SELECT emp.id,emp.nik, emp.nama,emp.tempat,
+        emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company,
+        max(s.gaji_pokok) gaji_pokok, max(t.sc) sc,max(t.natura) natura,max(t.bpjs_kesehatan) bpjs_kesehatan, max(t.lain_lain) lain_lain
+        FROM employee emp
         LEFT JOIN
-            (SELECT id_employee, gaji_pokok, MAX(updated_at) AS max_updated_at
-            FROM salaries GROUP BY id_employee,gaji_pokok limit 1)
-            AS salaries ON employee.id=salaries.id_employee
+        (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= month(NOW()) GROUP BY id_employee, nik, npwp) AS max_salaries
+        ON emp.id = max_salaries.id_employee
         LEFT JOIN
-            (SELECT id_employee,sc,natura,bpjs_kesehatan, MAX(updated_at) AS max_updated_at
-            FROM tunjangans GROUP BY id_employee,sc,natura,bpjs_kesehatan  limit 1)
-            AS tunjangans ON employee.id=tunjangans.id_employee
+        salaries AS s
+        ON emp.id = s.id_employee AND s.updated_at = max_salaries.max_updated_at
+        LEFT JOIN
+        company AS c
+        ON emp.id_company = c.id_company
+        LEFT JOIN
+        (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= month(NOW()) GROUP BY id_employee, nik, npwp) AS max_tunjangans
+        ON emp.id = max_tunjangans.id_employee
+        LEFT JOIN
+        tunjangans AS t
+        ON emp.id = t.id_employee AND t.updated_at = max_tunjangans.max_updated_at
+        group by emp.id,emp.nik, emp.nama,emp.tempat,
+        emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company
+        ORDER BY emp.id
         ";
 
         // $dataEmployee = DB::table('employee')
@@ -137,25 +147,26 @@ class EmployeeController extends Controller
         $dataEmployee = DB::table('employee')
         ->select('employee.id','employee.npwp','employee.nik')
         ->where('employee.npwp','=',$request->npwp)
-        ->orwhere('employee.nik', '=', $request->nik)
+        ->where('employee.nik', '=', $request->nik)
         ->get();
 
-        // dd($dataEmployee[0]->id);
+        // dd($dataEmployee[0]);
         Salary::create([
             'id_employee' => $dataEmployee[0]->id,
-            'nik' =>  $dataEmployee[0]->nik,
-            'npwp' =>  $dataEmployee[0]->npwp,
+            'nik' =>  $request->nik,
+            'npwp' =>  $request->npwp,
             'gaji_pokok' => $request->salary
         ]);
 
         Tunjangan::create([
             'id_employee' => $dataEmployee[0]->id,
-            'nik' =>  $dataEmployee[0]->nik,
-            'npwp' =>  $dataEmployee[0]->npwp,
+            'nik' =>  $request->nik,
+            'npwp' =>  $request->npwp,
             'sc' => $request->sc,
             'natura' => $request->natura,
             'bpjs_kesehatan' => $request->bpjs_kesehatan,
             'thr' => $request->thr,
+            'lain_lain' => $request->lain_lain
         ]);
            return back()->with([
             'success' => 'Berhasil menambahkan data perusahaan.'
@@ -169,13 +180,31 @@ class EmployeeController extends Controller
     public function show($id_company)
     {
 
-        $sql ="SELECT employee.id, employee.npwp, employee.nik, employee.nama,employee.tempat,
-        employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
-        employee.status_PTKP,employee.kode_karyawan,company.id_company,company.name_company
-        FROM employee
-        LEFT JOIN company ON employee.id_company=company.id_company
-        WHERE employee.id_company =  $id_company
-        ";
+        $sql =" SELECT emp.id,emp.nik, emp.nama,emp.tempat,
+        emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company,
+        max(s.gaji_pokok) gaji_pokok, max(t.sc) sc,max(t.natura) natura,max(t.bpjs_kesehatan) bpjs_kesehatan, max(t.lain_lain) lain_lain
+        FROM employee emp
+        LEFT JOIN
+        (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= month(NOW()) GROUP BY id_employee, nik, npwp) AS max_salaries
+        ON emp.id = max_salaries.id_employee
+        LEFT JOIN
+        salaries AS s
+        ON emp.id = s.id_employee AND s.updated_at = max_salaries.max_updated_at
+        LEFT JOIN
+        company AS c
+        ON emp.id_company = c.id_company
+        LEFT JOIN
+        (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= month(NOW()) GROUP BY id_employee, nik, npwp) AS max_tunjangans
+        ON emp.id = max_tunjangans.id_employee
+        LEFT JOIN
+        tunjangans AS t
+        ON emp.id = t.id_employee AND t.updated_at = max_tunjangans.max_updated_at
+        WHERE emp.id_company =  $id_company
+        group by emp.id,emp.nik, emp.nama,emp.tempat,
+        emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company
+        ORDER BY emp.id";
 
         $dataEmployee = DB::select($sql);
         $dataPerusahaan = Company::all();
@@ -191,23 +220,30 @@ class EmployeeController extends Controller
         $dataPerusahaan = Company::all();
         $dataPtkp = Ptkp::all();
 
-        $sql="SELECT employee.id,employee.npwp,employee.nik, employee.nama,employee.tempat,
-        employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
-        employee.status_PTKP,employee.kode_karyawan,employee.is_active,
-        company.id_company,company.name_company,
-        salaries.gaji_pokok,
-        tunjangans.sc,tunjangans.natura,tunjangans.bpjs_kesehatan,tunjangans.thr
-        FROM employee
-        LEFT JOIN company ON employee.id_company=company.id_company
+        $sql="  SELECT emp.id,emp.nik, emp.npwp, emp.nama,emp.tempat,
+        emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.id_company,
+        max(s.gaji_pokok) gaji_pokok, max(t.sc) sc,max(t.natura) natura,max(t.bpjs_kesehatan) bpjs_kesehatan, max(t.lain_lain) lain_lain,max(t.thr) thr
+        FROM employee emp
         LEFT JOIN
-            (SELECT id_employee, gaji_pokok
-            FROM salaries WHERE id_employee =  $id_employee ORDER BY updated_at desc limit 1)
-            AS salaries ON employee.id=salaries.id_employee
+        (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= month(NOW()) GROUP BY id_employee, nik, npwp) AS max_salaries
+        ON emp.id = max_salaries.id_employee
         LEFT JOIN
-            (SELECT id_employee,sc,natura,bpjs_kesehatan,thr
-            FROM tunjangans WHERE id_employee =  $id_employee ORDER BY updated_at desc limit 1)
-            AS tunjangans ON employee.id=tunjangans.id_employee
-        WHERE employee.id =  $id_employee
+        salaries AS s
+        ON emp.id = s.id_employee AND s.updated_at = max_salaries.max_updated_at
+        LEFT JOIN
+        company AS c
+        ON emp.id_company = c.id_company
+        LEFT JOIN
+        (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= month(NOW()) GROUP BY id_employee, nik, npwp) AS max_tunjangans
+        ON emp.id = max_tunjangans.id_employee
+        LEFT JOIN
+        tunjangans AS t
+        ON emp.id = t.id_employee AND t.updated_at = max_tunjangans.max_updated_at
+        WHERE emp.id =  $id_employee
+        group by emp.id,emp.nik, emp.nama,emp.tempat,
+        emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company
         ";
         $dataEmployee = DB::select($sql)[0];
         return view('employee.EditEmployee', compact('dataEmployee','dataPerusahaan','dataPtkp'));
@@ -219,22 +255,30 @@ class EmployeeController extends Controller
     public function update(Request $request, $id_employee)
     {
 
-        $sql="SELECT employee.id,employee.npwp, employee.nik, employee.nama,employee.tempat,
-        employee.tanggal_lahir,employee.alamat,employee.jenis_kelamin,
-        employee.status_PTKP,employee.kode_karyawan,company.id_company,company.name_company,
-        salaries.gaji_pokok,
-        tunjangans.sc,tunjangans.natura,tunjangans.bpjs_kesehatan,tunjangans.thr
-        FROM employee
-        LEFT JOIN company ON employee.id_company=company.id_company
+        $sql=" SELECT emp.id,emp.nik, emp.npwp, emp.nama,emp.tempat,
+        emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.id_company,
+        max(s.gaji_pokok) gaji_pokok, max(t.sc) sc,max(t.natura) natura,max(t.bpjs_kesehatan) bpjs_kesehatan, max(t.lain_lain) lain_lain,max(t.thr) thr
+        FROM employee emp
         LEFT JOIN
-            (SELECT id_employee, gaji_pokok
-            FROM salaries WHERE id_employee =  $id_employee ORDER BY updated_at desc limit 1)
-            AS salaries ON employee.id=salaries.id_employee
+        (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= month(NOW()) GROUP BY id_employee, nik, npwp) AS max_salaries
+        ON emp.id = max_salaries.id_employee
         LEFT JOIN
-            (SELECT id_employee,sc,natura,bpjs_kesehatan,thr
-            FROM tunjangans WHERE id_employee =  $id_employee ORDER BY updated_at desc limit 1)
-            AS tunjangans ON employee.id=tunjangans.id_employee
-        WHERE employee.id =  $id_employee
+        salaries AS s
+        ON emp.id = s.id_employee AND s.updated_at = max_salaries.max_updated_at
+        LEFT JOIN
+        company AS c
+        ON emp.id_company = c.id_company
+        LEFT JOIN
+        (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= month(NOW()) GROUP BY id_employee, nik, npwp) AS max_tunjangans
+        ON emp.id = max_tunjangans.id_employee
+        LEFT JOIN
+        tunjangans AS t
+        ON emp.id = t.id_employee AND t.updated_at = max_tunjangans.max_updated_at
+        WHERE emp.id =  $id_employee
+        group by emp.id,emp.nik, emp.nama,emp.tempat,
+        emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company
         ";
         $dataEmployee = DB::select($sql)[0];
 
@@ -243,6 +287,7 @@ class EmployeeController extends Controller
                 ->update([
                     'nama' => $request->nama,
                     'nik' => $request->nik,
+                    'npwp'=> $request->npwp,
                     'tempat' => $request->tempat,
                     'tanggal_lahir' => $request->tanggal_lahir,
                     'alamat' => $request->alamat,
@@ -251,8 +296,9 @@ class EmployeeController extends Controller
                     'kode_karyawan' => $request->kode_karyawan,
                     'is_active' => $request->is_active,
                     'id_company' => $request->id_company,
-                    'is_active' => $request->is_active
-                    // 'updated_at' => now() // Assuming you want to update the 'updated_at' column to the current timestamp
+                    'is_active' => $request->is_active,
+                    
+                    'updated_at' => now() // Assuming you want to update the 'updated_at' column to the current timestamp
         ]);
 
         if($dataEmployee->gaji_pokok != $request->gaji_pokok){
@@ -269,10 +315,13 @@ class EmployeeController extends Controller
         {
             Tunjangan::create([
                 'id_employee' => $id_employee,
+                'nik' => $request->nik,
+                'npwp'=> $request->npwp,
                 'sc' => $request->sc,
                 'natura' => $request->natura,
                 'bpjs_kesehatan' => $request->bpjs_kesehatan,
                 'thr' => $request->thr,
+                'lain_lain' => $request->lain_lain
             ]);
         }
 

@@ -25,8 +25,9 @@ class TunjanganImport implements ToModel, WithHeadingRow
             'npwp' => $row['npwp'],
             'sc' => $row['sc'],
             'natura' => $row['natura'],
-            'bpjs_kesehatan' => $row['bpjs_kesehatan']
-            'thr' => $row['thr']
+            'bpjs_kesehatan' => $row['bpjs_kesehatan'],
+            'thr' => $row['thr'],
+            'lain_lain' => $row['lain_lain']
         ]);
     }
 

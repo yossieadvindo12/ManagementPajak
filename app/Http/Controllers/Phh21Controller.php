@@ -128,13 +128,13 @@ class Phh21Controller extends Controller
     c.id_company, 
     s.gaji_pokok, 
     b.jkm + b.jkk + b.bpjs_kesehatan AS a5,  
-    max_tunjangans.sc,
-    max_tunjangans.natura,
-    s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( max_tunjangans.sc,0) +ifnull( max_tunjangans.natura,0) as gaji_bruto,
+    t.sc,
+    t.natura,
+    s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( t.sc,0) +ifnull( t.natura,0) as gaji_bruto,
 	ter.`Ter alias` ,
-	(s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( max_tunjangans.sc,0) +ifnull( max_tunjangans.natura,0)) * ter.presentase as pph21,
-	(s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( max_tunjangans.sc,0) +ifnull( max_tunjangans.natura,0)) - ((s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( max_tunjangans.sc,0) +ifnull( max_tunjangans.natura,0)) * ter.presentase) as thp,
-	(s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( max_tunjangans.sc,0) +ifnull( max_tunjangans.natura,0)) - ((s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( max_tunjangans.sc,0) +ifnull( max_tunjangans.natura,0)) - ((s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( max_tunjangans.sc,0) +ifnull( max_tunjangans.natura,0)) * ter.presentase)) 
+	(s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( t.sc,0) +ifnull( t.natura,0)) * ter.presentase as pph21,
+	(s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( t.sc,0) +ifnull( t.natura,0)) - ((s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( t.sc,0) +ifnull( t.natura,0)) * ter.presentase) as thp,
+	(s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( t.sc,0) +ifnull( t.natura,0)) - ((s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( t.sc,0) +ifnull( t.natura,0)) - ((s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( t.sc,0) +ifnull( t.natura,0)) * ter.presentase)) 
 	 as gross_up,
      :keterangan_pph as keterangan_pph,
     DATE_FORMAT(CONCAT(YEAR(NOW()), CONCAT('-', :monthnum1), '-01'), '%Y-%m-%d') AS created_at, 
@@ -142,11 +142,10 @@ class Phh21Controller extends Controller
     FROM 
     employee AS emp 
     LEFT JOIN 
-    (SELECT id_employee, nik, npwp, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= :monthnum3 GROUP BY id_employee, nik, npwp) AS max_salaries
+    (SELECT distinct id_employee, MAX(updated_at) AS max_updated_at FROM salaries WHERE MONTH(updated_at) <= :monthnum3 GROUP BY id_employee) AS max_salaries
     ON emp.id = max_salaries.id_employee
-    LEFT JOIN 
-    salaries AS s 
-    ON emp.id = s.id_employee AND s.updated_at = max_salaries.max_updated_at
+    left join 
+    salaries s on emp.id = s.id_employee and s.updated_at = max_salaries.max_updated_at
     LEFT JOIN 
     company AS c 
     ON emp.id_company = c.id_company 
@@ -154,11 +153,10 @@ class Phh21Controller extends Controller
     (select id_employee, nik, npwp, gaji_pokok, jkm, jkk,bpjs_kesehatan, max(updated_at) as max_updated_at  from bpjs where MONTH(updated_at)= :monthnum5 group  by id_employee, nik, npwp, gaji_pokok, jkm, jkk,bpjs_kesehatan) as b 
     on emp.id = b.id_employee 
     LEFT JOIN 
-    (SELECT id_employee, nik, npwp,sc, natura, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= :monthnum4 GROUP BY id_employee, nik, npwp,sc, natura) AS max_tunjangans
+    (SELECT distinct id_employee, MAX(updated_at) AS max_updated_at FROM tunjangans WHERE MONTH(updated_at) <= :monthnum4 GROUP BY id_employee) AS max_tunjangans
     ON emp.id = max_tunjangans.id_employee
-    LEFT JOIN 
-    tunjangans AS t 
-    ON emp.id = t.id_employee AND t.updated_at = max_tunjangans.max_updated_at
+    left join 
+    tunjangans t on emp.id = t.id_employee  and t.updated_at = max_tunjangans.max_updated_at
 LEFT JOIN ter ON 
     CASE emp.status_PTKP
     WHEN 'K/3' THEN 'TER C'
@@ -172,10 +170,17 @@ LEFT JOIN ter ON
         WHEN 'K/3' THEN 'TER C'
         ELSE NULL
     END = ter.Ter
-        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT null and emp.is_active = 1
+        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT null 
+        and emp.id in (SELECT id 
+            FROM employee 
+            WHERE 
+                (is_active = 1 AND (MONTH(updated_at) IS NULL OR MONTH(updated_at) <= :monthnum6))
+                OR 
+                (is_active = 0 AND (MONTH(updated_at) IS NULL OR MONTH(updated_at) > :monthnum7))
+            ) 
         and s.gaji_pokok BETWEEN min AND ifnull(max,9999999999)
-        GROUP BY emp.id,emp.npwp,emp.nik, c.id_company, s.gaji_pokok, t.bpjs_kesehatan,b.jkm, b.jkk , b.bpjs_kesehatan , max_tunjangans.sc,
-    max_tunjangans.natura,managementpajak.ter.`Ter alias`,managementpajak.ter.presentase)";
+        GROUP BY emp.id,emp.npwp,emp.nik, c.id_company, s.gaji_pokok, b.jkm, b.jkk , b.bpjs_kesehatan , t.sc,
+        t.natura,managementpajak.ter.`Ter alias`,managementpajak.ter.presentase)";
     
     DB::insert($sql, [
         'id_company' => $request->id_company, 
@@ -184,6 +189,8 @@ LEFT JOIN ter ON
         'monthnum3' => $request->month,
         'monthnum4' => $request->month,
         'monthnum5' => $request->month,
+        'monthnum6' => $request->month,
+        'monthnum7' => $request->month,
         'keterangan_pph' => $request->keterangan_pph
     ]);
     

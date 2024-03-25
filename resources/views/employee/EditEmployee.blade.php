@@ -157,7 +157,7 @@
 
         <div class="form-group">
             <label><strong>Gaji Pokok</strong></label>
-            <input type="number" id="gaji_pokok" name="gaji_pokok" value="{{ old('gaji_pokok',$dataEmployee->gaji_pokok? $dataEmployee->gaji_pokok :0) }}"
+            <input type="number" id="gaji_pokok" name="gaji_pokok" value="{{ old('gaji_pokok',$dataEmployee->gaji_pokok? $dataEmployee->gaji_pokok :NULL) }}"
                 class="form-control form-control-user" placeholder="gaji pokok" />
         </div>
         @error('salary')
@@ -166,7 +166,7 @@
 
         <div class="form-group">
             <label><strong>Tunjangan Hari Raya</strong></label>
-            <input type="number" id="thr" name="thr" value="{{ old('thr',$dataEmployee->thr? $dataEmployee->thr :0) }}"
+            <input type="number" id="thr" name="thr" value="{{ old('thr',$dataEmployee->thr? $dataEmployee->thr :NULL) }}"
                 class="form-control form-control-user" placeholder="Tunjangan Hari Raya" />
         </div>
         @error('thr')
@@ -175,7 +175,7 @@
 
         <div class="form-group">
             <label><strong>Tunjangan SC</strong></label>
-            <input type="number" id="sc" name="sc" value="{{ old('sc',$dataEmployee->sc? $dataEmployee->sc :0) }}"
+            <input type="number" id="sc" name="sc" value="{{ old('sc',$dataEmployee->sc? $dataEmployee->sc :NULL) }}"
                 class="form-control form-control-user" placeholder="Tunjangan SC" />
         </div>
         @error('salary')
@@ -184,7 +184,7 @@
 
         <div class="form-group">
             <label><strong>Tunjangan Natura</strong></label>
-            <input type="number" id="natura" name="natura" value="{{ old('natura',$dataEmployee->natura? $dataEmployee->natura :0) }}"
+            <input type="number" id="natura" name="natura" value="{{ old('natura',$dataEmployee->natura? $dataEmployee->natura :NULL) }}"
                 class="form-control form-control-user" placeholder="Tunjangan Natura" />
         </div>
         @error('natura')
@@ -193,8 +193,17 @@
 
         <div class="form-group">
             <label><strong>BPJS KESEHATAN</strong></label>
-            <input type="number" id="bpjs_kesehatan" name="bpjs_kesehatan" value="{{ old('bpjs_kesehatan',$dataEmployee->bpjs_kesehatan? $dataEmployee->bpjs_kesehatan :0) }}"
+            <input type="number" id="bpjs_kesehatan" name="bpjs_kesehatan" value="{{ old('bpjs_kesehatan',$dataEmployee->bpjs_kesehatan? $dataEmployee->bpjs_kesehatan :NULL) }}"
                 class="form-control form-control-user" placeholder="BPJS KESEHATAN" />
+        </div>
+        @error('bpjs_kesehatan')
+            <small>{{ $message }}</small>
+        @enderror
+
+        <div class="form-group">
+            <label><strong>Tunjangan Lain-lain</strong></label>
+            <input type="number" id="lain_lain" name="lain_lain" value="{{ old('lain_lain',$dataEmployee->lain_lain? $dataEmployee->lain_lain :NULL) }}"
+                class="form-control form-control-user" placeholder="Tunjangan Lain-lain" />
         </div>
         @error('bpjs_kesehatan')
             <small>{{ $message }}</small>
