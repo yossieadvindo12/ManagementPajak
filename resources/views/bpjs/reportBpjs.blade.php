@@ -4,12 +4,12 @@
 @section('content-wrapper')
 @section('content')
     <div class="m-4  ">
-        <h1 class="text-center">Laporan BPJS</h1>
+        <h1 class="text-center">Laporan BPJS A5</h1>
         <form id="bpjsForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->
             <div class="d-flex justify-content-between mb-5">
-                {{-- <div class="d-flex"> --}}
+                <div class="d-flex">
                     <div class="form-group w-35 ml-3">
                         <label><strong>Perusahaan</strong></label>
                         <select id="company" class="form-control" name="id_company">
@@ -29,7 +29,7 @@
                             <option value="{{ date('Y',strtotime('+ 2 year')) }}">{{ date('Y',strtotime('+ 2 year')) }}</option>
                         </select>
                     </div>
-                {{-- </div> --}}
+                </div>
                 <div class="d-flex">
                     <button type="button" class="mt-4 btn btn-success" onclick="submitForm('show')">Cari</button>
                 </div>

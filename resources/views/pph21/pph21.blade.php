@@ -4,7 +4,7 @@
 @section('content-wrapper')
 @section('content')
     <div class="m-4  ">
-        <h1 class="text-center">Data BPJS</h1>
+        <h1 class="text-center">Data PPH21</h1>
         <form id="bpjsForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->
@@ -63,15 +63,19 @@
                         <th scope="col">Nama</th>
                         <th scope="col">Nama Perusahaan</th>
                         <th scope="col">NIK</th>
+                        <th scope="col">NPWP</th>
                         <th scope="col">Gaji Pokok</th>
                         <th scope="col">BPJS</th>
                         <th scope="col">SC</th>
                         <th scope="col">NATURA</th>
+                        <th scope="col">THR</th>
+                        <th scope="col">LAIN - LAIN</th>
                         <th scope="col">GAJI BRUTO</th>
                         <th scope="col">Ter Alias</th>
                         <th scope="col">PPH 21</th>
                         <th scope="col">THP</th>
                         <th scope="col">GROSS UP</th>
+                        <th scope="col">KETERANGAN PPH</th>
                         <th scope="col">BULAN</th>
                         <th scope="col">TAHUN</th>
                         {{-- <th scope="col">Aksi</th> --}}
@@ -84,15 +88,19 @@
                             <td>{{ $item->nama }}</td>
                             <td>{{ $item->name_company }}</td>
                             <td>{{ $item->nik }}</td>
+                            <td>{{ $item->npwp }}</td>
                             <td>{{ $item->gaji_pokok }}</td>
                             <td>{{ $item->A5 }}</td>
                             <td>{{ $item->sc }}</td>
                             <td>{{ $item->natura }}</td>
+                            <td>{{ $item->thr }}</td>
+                            <td>{{ $item->lain_lain }}</td>
                             <td>{{ $item->gaji_bruto }}</td>
                             <td>{{ $item->ter_alias }}</td>
                             <td>{{ $item->pph21 }}</td>
                             <td>{{ $item->thp }}</td>
                             <td>{{ $item->gross_up }}</td>
+                            <td>{{ $item->keterangan_pph }}</td>
                             <td>{{ $item->bulan }}</td>
                             <td>{{ $item->year }}</td>
                             {{-- <td>Pelukis</td> --}}
