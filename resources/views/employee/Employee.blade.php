@@ -86,6 +86,7 @@
                         <th scope="col">Jenis Kelamin</th>
                         <th scope="col">Status PTKP</th>
                         <th scope="col">Status Karyawan</th>
+                        <th scope="col">Status BPJS</th>
                         <th scope="col">Apakah Karyawan Aktif</th>
                         <th scope="col">Perusahaan</th>
                         <th scope="col">Gaji</th>
@@ -107,8 +108,9 @@
                         <td>{{ $item->alamat }}</td>
                         <td>{{ $item->jenis_kelamin }}</td>
                         <td>{{ $item->status_PTKP }}</td>
-                        <td>{{ $item->is_active === 1? 'Aktif': 'Tidak Aktif' }}</td>
                         <td>{{ $item->kode_karyawan }}</td>
+                        <td>{{ $item->status_BPJS === 1? 'Aktif': 'Tidak Aktif' }}</td>
+                        <td>{{ $item->is_active === 1? 'Aktif': 'Tidak Aktif' }}</td>
                         <td>{{ $item->name_company}}</td>
                         <td>Rp. {{ number_format($item->gaji_pokok,'0',',','.')}}</td>
                         {{-- <td>{{ $item->sc}}</td>

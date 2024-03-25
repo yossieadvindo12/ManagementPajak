@@ -31,7 +31,7 @@ class EmployeeController extends Controller
         // $dataEmployee = Employee::all();
         $sql="   SELECT emp.id,emp.nik, emp.nama,emp.tempat,
         emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
-        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company,emp.status_BPJS,
         max(s.gaji_pokok) gaji_pokok, max(t.sc) sc,max(t.natura) natura,max(t.bpjs_kesehatan) bpjs_kesehatan, max(t.lain_lain) lain_lain
         FROM employee emp
         LEFT JOIN
@@ -129,6 +129,7 @@ class EmployeeController extends Controller
                 'status_ptkp' => $request->status_ptkp,
                 'id_company' => $request->id_company,
                 'kode_karyawan' => $request->kode_karyawan,
+                'status_bpjs' => $request->status_bpjs,
                 'is_active' => 1,
                 'created_at' => DB::raw('NOW()')
             ]);
@@ -182,7 +183,7 @@ class EmployeeController extends Controller
 
         $sql =" SELECT emp.id,emp.nik, emp.nama,emp.tempat,
         emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
-        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.name_company,emp.status_BPJS,
         max(s.gaji_pokok) gaji_pokok, max(t.sc) sc,max(t.natura) natura,max(t.bpjs_kesehatan) bpjs_kesehatan, max(t.lain_lain) lain_lain
         FROM employee emp
         LEFT JOIN
@@ -222,7 +223,7 @@ class EmployeeController extends Controller
 
         $sql="  SELECT emp.id,emp.nik, emp.npwp, emp.nama,emp.tempat,
         emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
-        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.id_company,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.id_company,emp.status_BPJS,
         max(s.gaji_pokok) gaji_pokok, max(t.sc) sc,max(t.natura) natura,max(t.bpjs_kesehatan) bpjs_kesehatan, max(t.lain_lain) lain_lain,max(t.thr) thr
         FROM employee emp
         LEFT JOIN
@@ -257,7 +258,7 @@ class EmployeeController extends Controller
 
         $sql=" SELECT emp.id,emp.nik, emp.npwp, emp.nama,emp.tempat,
         emp.tanggal_lahir,emp.alamat,emp.jenis_kelamin,
-        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.id_company,
+        emp.status_PTKP,emp.kode_karyawan,emp.is_active,c.id_company,emp.status_BPJS,
         max(s.gaji_pokok) gaji_pokok, max(t.sc) sc,max(t.natura) natura,max(t.bpjs_kesehatan) bpjs_kesehatan, max(t.lain_lain) lain_lain,max(t.thr) thr
         FROM employee emp
         LEFT JOIN
@@ -296,8 +297,9 @@ class EmployeeController extends Controller
                     'kode_karyawan' => $request->kode_karyawan,
                     'is_active' => $request->is_active,
                     'id_company' => $request->id_company,
+                    'status_bpjs' => $request->status_BPJS,
                     'is_active' => $request->is_active,
-                    
+
                     'updated_at' => now() // Assuming you want to update the 'updated_at' column to the current timestamp
         ]);
 
