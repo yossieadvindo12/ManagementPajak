@@ -128,20 +128,20 @@ class BPJSController extends Controller
     emp.nik,
     emp.npwp,
     c.id_company,
-    if(emp.status_BPJS = 1,max(s.gaji_pokok),0),
-    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.02 AS jht_karyawan,
-    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.037 AS jht_pt,
-    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.0030 AS jkm,
-    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.0054 AS jkk,
-    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.01 AS jp_karyawan,
-    if(emp.status_BPJS = 1,max(s.gaji_pokok),0) * 0.02 AS jp_pt,
+    if(s.gaji_pokok is null,0,if(emp.status_BPJS = 1,max(ub.upah_bpjs),0)) upah,
+    if(s.gaji_pokok is null,0,if(emp.status_BPJS = 1,max(ub.upah_bpjs),0)) * 0.02 AS jht_karyawan,
+    if(s.gaji_pokok is null,0,if(emp.status_BPJS = 1,max(ub.upah_bpjs),0)) * 0.037 AS jht_pt,
+    if(s.gaji_pokok is null,0,if(emp.status_BPJS = 1,max(ub.upah_bpjs),0)) * 0.0030 AS jkm,
+    if(s.gaji_pokok is null,0,if(emp.status_BPJS = 1,max(ub.upah_bpjs),0)) * 0.0054 AS jkk,
+    if(s.gaji_pokok is null,0,if(emp.status_BPJS = 1,max(ub.upah_bpjs),0)) * 0.01 AS jp_karyawan,
+    if(s.gaji_pokok is null,0,if(emp.status_BPJS = 1,max(ub.upah_bpjs),0)) * 0.02 AS jp_pt,
     IF(t.bpjs_kesehatan IS NULL, 0, max(t.bpjs_kesehatan)) AS bpjs_kesehatan,
-    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.02),0) +
-    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.01),0) AS ditanggung_karyawan,
-    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.037),0) +
-    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.0030),0) +
-    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.0054),0) +
-    if(emp.status_BPJS = 1,(s.gaji_pokok * 0.02),0) +
+    if(emp.status_BPJS = 1,(ub.upah_bpjs * 0.02),0) +
+    if(emp.status_BPJS = 1,(ub.upah_bpjs * 0.01),0) AS ditanggung_karyawan,
+    if(emp.status_BPJS = 1,(ub.upah_bpjs * 0.037),0) +
+    if(emp.status_BPJS = 1,(ub.upah_bpjs * 0.0030),0) +
+    if(emp.status_BPJS = 1,(ub.upah_bpjs * 0.0054),0) +
+    if(emp.status_BPJS = 1,(ub.upah_bpjs * 0.02),0) +
     IF(max(t.bpjs_kesehatan) IS NULL, 0, max(t.bpjs_kesehatan)) AS ditanggung_pt,
     DATE_FORMAT(CONCAT(YEAR(NOW()), CONCAT('-', :monthnum1), '-01'), '%Y-%m-%d') AS created_at,
     DATE_FORMAT(CONCAT(YEAR(NOW()), CONCAT('-', :monthnum2), '-01'), '%Y-%m-%d') AS updated_at
@@ -153,6 +153,11 @@ class BPJSController extends Controller
     left join
     salaries s on emp.id = s.id_employee and s.updated_at = max_salaries.max_updated_at
     LEFT JOIN
+    (SELECT distinct id_employee,MAX(updated_at) AS max_updated_at FROM upah_bpjs  WHERE MONTH(updated_at) <= :monthnum7 GROUP BY id_employee) AS max_upah
+    ON emp.id = max_upah.id_employee
+    left join
+    upah_bpjs ub  on emp.id = ub.id_employee and ub.updated_at = max_upah.max_updated_at
+    LEFT JOIN
     company AS c
     ON emp.id_company = c.id_company
     LEFT JOIN
@@ -160,7 +165,7 @@ class BPJSController extends Controller
     ON emp.id = max_tunjangans.id_employee
     left join
     tunjangans t on emp.id = t.id_employee  and t.updated_at = max_tunjangans.max_updated_at
-        WHERE emp.id_company = :id_company AND max_salaries.max_updated_at IS NOT NULL AND max_tunjangans.max_updated_at IS NOT NULL
+        WHERE emp.id_company = :id_company AND  max_tunjangans.max_updated_at IS NOT NULL
         and emp.id in (SELECT id
             FROM employee
             WHERE
@@ -178,6 +183,7 @@ class BPJSController extends Controller
         'monthnum4' => $request->month,
         'monthnum5' => $request->month,
         'monthnum6' => $request->month,
+        'monthnum7' => $request->month,
     ]);
 
 
