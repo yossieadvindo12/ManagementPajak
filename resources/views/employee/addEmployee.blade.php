@@ -19,10 +19,10 @@
                         </div>
                     @endif
                     @if (Session::has('error'))
-                    <div class="alert alert-warning" role="alert">
-                        {{ Session::get('error') }}
-                    </div>
-                @endif
+                        <div class="alert alert-warning" role="alert">
+                            {{ Session::get('error') }}
+                        </div>
+                    @endif
                     <form id="ocrForm" class="d-flex justify-content-between" action="/extract-text" method="post"
                         enctype="multipart/form-data">
                         @csrf
@@ -113,25 +113,33 @@
                             <select id='ptkp' class="form-control" name ="status_ptkp">
                                 <option value="">Pilih Status PTKP</option>
                                 @foreach ($dataPtkp as $item)
-
-                                <option value="{{  $item->ptkp}}">{{ $item->ptkp }}</option>
+                                    <option value="{{ $item->ptkp }}">{{ $item->ptkp }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
                             <label><strong>BPJS Tenaga Kerja</strong></label>
-                            <select class="form-control" name = "status_bpjs">
-                                <option value = "1" > AKTIF </option>
-                                <option value = "0"> TIDAK AKTIF </option>
+                            <select class="form-control" name="status_bpjs" id="status_bpjs">
+                                <option value="">Pilih Status</option>
+                                <option value="1">AKTIF</option>
+                                <option value="0">TIDAK AKTIF</option>
                             </select>
                         </div>
+                        
+                        <div class="form-group" id="upah_bpjs_container" style="display: none;">
+                            <label><strong>Upah BPJS</strong></label>
+                            <input type="text" id="upah_bpjs" name="upah_bpjs" value="{{ old('upah_bpjs') }}"
+                                class="form-control form-control-user" placeholder="Upah BPJS" />
+                        </div>
+                        @error('upah_bpjs')
+                            <small>{{ $message }}</small>
+                        @enderror
                         <div class="form-group">
                             <label><strong>Perusahaan</strong></label>
                             <select id="company" class="form-control" name = "id_company">
                                 <option value="">Pilih Perusahaan</option>
                                 @foreach ($dataPerusahaan as $item)
-
-                                <option value="{{  $item->id_company}}">{{ $item->name_company }}</option>
+                                    <option value="{{ $item->id_company }}">{{ $item->name_company }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -146,7 +154,7 @@
                                 class="form-control form-control-user" placeholder="Tunjangan SC" />
                         </div>
                         @error('salary')
-                        <small>{{ $message }}</small>
+                            <small>{{ $message }}</small>
                         @enderror
 
                         <div class="form-group">
@@ -155,7 +163,7 @@
                                 class="form-control form-control-user" placeholder="Tunjangan Natura" />
                         </div>
                         @error('natura')
-                        <small>{{ $message }}</small>
+                            <small>{{ $message }}</small>
                         @enderror
 
                         <div class="form-group">
@@ -164,13 +172,14 @@
                                 class="form-control form-control-user" placeholder="Tunjangan Hari Raya" />
                         </div>
                         @error('thr')
-                        <small>{{ $message }}</small>
+                            <small>{{ $message }}</small>
                         @enderror
 
                         <div class="form-group">
                             <label><strong>BPJS KESEHATAN</strong></label>
-                            <input type="text" id="bpjs_kesehatan" name="bpjs_kesehatan" value="{{ old('bpjs_kesehatan') }}"
-                                class="form-control form-control-user" placeholder="BPJS KESEHATAN" />
+                            <input type="text" id="bpjs_kesehatan" name="bpjs_kesehatan"
+                                value="{{ old('bpjs_kesehatan') }}" class="form-control form-control-user"
+                                placeholder="BPJS KESEHATAN" />
                         </div>
                         @error('bpjs_kesehatan')
                             <small>{{ $message }}</small>
@@ -282,6 +291,18 @@
                 console.error('Error:', error);
             }
 
+        });
+    </script>
+    <script>
+        document.getElementById('status_bpjs').addEventListener('change', function() {
+            var status = this.value;
+            var upahBpjsContainer = document.getElementById('upah_bpjs_container');
+
+            if (status === '1') {
+                upahBpjsContainer.style.display = 'block';
+            } else {
+                upahBpjsContainer.style.display = 'none';
+            }
         });
     </script>
 @endsection

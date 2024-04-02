@@ -8,6 +8,7 @@ use App\Imports\TunjanganImport;
 use App\Imports\SalaryImport;
 use App\Models\Ptkp;
 use App\Models\Salary;
+use App\Models\Upah_bpjs;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Tunjangan;
@@ -157,6 +158,13 @@ class EmployeeController extends Controller
             'nik' =>  $request->nik,
             'npwp' =>  $request->npwp,
             'gaji_pokok' => $request->salary
+        ]);
+        
+        Upah_bpjs::create([
+            'id_employee' => $dataEmployee[0]->id,
+            'nik' =>  $request->nik,
+            'npwp' =>  $request->npwp,
+            'upah_bpjs' => $request->upah_bpjs
         ]);
 
         Tunjangan::create([
