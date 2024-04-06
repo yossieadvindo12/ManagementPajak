@@ -45,7 +45,7 @@
                 </select>
             </div> --}}
             <div class="d-flex">
-                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">export</button>
+                <button type="button" class="m-2 btn btn-success" ><a href="{{ route('exportpph21bulanan') }}">export</a></button>
             </div>
             </form>
         
@@ -125,10 +125,10 @@
 
     <script>
         function exportExcel(){
-            var form = document.getElementById('bpjsForm');
-                var year = document.getElementById('year').value;
+           // var form = document.getElementById('bpjsForm');
+               // var year = document.getElementById('year').value;
 
-                window.location.href = "{{url('reportBpjs')}}/export_excel/";
+                window.location.href = "{{url('exportpph21bulanan')}}";
             }
     </script>
 @endsection

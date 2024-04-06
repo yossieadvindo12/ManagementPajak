@@ -2,13 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\phh21;
 use App\Models\Company;
+use App\Exports\PphExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PphReportController extends Controller
 {
     //
+    public function export() 
+    {
+        $data = phh21::query()->select(
+            'emp.nama',
+            'emp.nik',
+            'emp.npwp',
+            'c.name_company',
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 1 THEN ps.pph21 ELSE 0 END),0) AS JANUARY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 2 THEN ps.pph21 ELSE 0 END),0) AS FEBRUARY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 3 THEN ps.pph21 ELSE 0 END),0) AS MARCH'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 4 THEN ps.pph21 ELSE 0 END),0) AS APRIL'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 5 THEN ps.pph21 ELSE 0 END),0) AS MAY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 6 THEN ps.pph21 ELSE 0 END),0) AS JUNE'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 7 THEN ps.pph21 ELSE 0 END),0) AS JULY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 8 THEN ps.pph21 ELSE 0 END),0) AS AUGUST'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 9 THEN ps.pph21 ELSE 0 END),0) AS SEPTEMBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 10 THEN ps.pph21 ELSE 0 END),0) AS OCTOBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 11 THEN ps.pph21 ELSE 0 END),0) AS NOVEMBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 12 THEN ps.pph21 ELSE 0 END),0) AS DECEMBER'),
+            \DB::raw('
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 1 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 2 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 3 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 4 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 5 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 6 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 7 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 8 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 9 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 10 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 11 THEN ps.pph21 ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 12 THEN ps.pph21 ELSE 0 END),0)
+            AS total')
+        )
+        ->from('employee AS emp')
+        ->leftJoin('phh21s AS ps', 'emp.id', '=', 'ps.id_employee')
+        ->leftJoin('company AS c', 'emp.id_company', '=', 'c.id_company')
+        ->where('ps.keterangan_pph', 'reportMonthly')
+        ->groupBy('emp.nama', 'emp.nik', 'emp.npwp', 'c.name_company')
+        ->get();
+
+        return Excel::download(new PphExport($data), 'pph21bulanan.xlsx');
+    }
+    
     public function index()
     {
           $sql = "SELECT

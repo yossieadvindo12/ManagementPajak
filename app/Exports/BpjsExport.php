@@ -11,43 +11,40 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class BpjsExport implements WithMapping
+class BpjsExport implements FromCollection, WithHeadings
 {
-    /**
-    * @return \Illuminate\Support\FromQuery
-    */
-
-    protected $year;
     protected $data;
-
-    // function __construct($year) {
-    //     $this->year = $year;
-    // }
-
-    function __construct($data) {
+    
+    public function __construct($data)
+    {
         $this->data = $data;
     }
 
-
-    // public function view(): View
-    // {
-    //     return view('bpjs.reportBpjs', [
-    //         'dataBPJS' => Bpjs::all()
-    //     ]);
-    // }
-    public function map($data): array
+    public function collection()
     {
-        // This example will return 3 rows.
-        // First row will have 2 column, the next 2 will have 1 column
-        return [
-            $data->nama,
-            $data->nama_perusahaan,
-        ];
+        return $this->data;
     }
 
-    // public function headings(): array
-    // {
-    //     $attributes = array_keys($this->collection()->first()->getAttributes());
-    //     return $attributes;
-    // }
+    public function headings(): array
+    {
+        return [
+            'Nama',
+            'NIK',
+            'NPWP',
+            'Company Name',
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December',
+            'Total'
+        ];
+    }
 }
