@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session as FacadesSession;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -159,7 +160,7 @@ class EmployeeController extends Controller
             'npwp' =>  $request->npwp,
             'gaji_pokok' => $request->salary
         ]);
-        
+
         Upah_bpjs::create([
             'id_employee' => $dataEmployee[0]->id,
             'nik' =>  $request->nik,
@@ -365,14 +366,15 @@ class EmployeeController extends Controller
 		$nama_file = rand().$file->getClientOriginalName();
 
 		// upload ke folder file_tunjangan di dalam folder public
-		$file->move('file_tunjangan',$nama_file);
+		$path = $file->storeAs('public/excel',$nama_file);
 
 		// import data
-		Excel::import(new TunjanganImport, public_path('/file_tunjangan/'.$nama_file));
-        Excel::import(new SalaryImport, public_path('/file_tunjangan/'.$nama_file));
+		Excel::import(new TunjanganImport, storage_path('app/public/excel/'.$nama_file));
+        Excel::import(new SalaryImport, storage_path('app/public/excel/'.$nama_file));
 
 		// notifikasi dengan session
 		FacadesSession::flash('sukses','Data Berhasil Diimport!');
+        Storage::delete($path);
 
 		// alihkan halaman kembali
 		return redirect('/employee');

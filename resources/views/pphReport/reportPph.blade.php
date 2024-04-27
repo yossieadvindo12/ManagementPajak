@@ -4,8 +4,8 @@
 @section('content-wrapper')
 @section('content')
     <div class="m-4  ">
-        <h1 class="text-center">Laporan PPH 21 </h1>
-        <form id="bpjsForm" action="#" method="POST">
+        <h1 class="text-center">Laporan PPH 21</h1>
+        <form id="pphForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->
             <div class="d-flex justify-content-between mb-5">
@@ -45,12 +45,12 @@
                 </select>
             </div> --}}
             <div class="d-flex">
-                <button type="button" class="m-2 btn btn-success" ><a href="{{ route('exportpph21bulanan') }}">export</a></button>
+                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">export</button>
             </div>
             </form>
-        
-        
-        
+
+
+
         <div class="row table-responsive">
             <table class="table">
                 <thead>
@@ -105,30 +105,31 @@
     </div>
     <script>
         function submitForm(action) {
-            var form = document.getElementById('bpjsForm');
+            var form = document.getElementById('pphForm');
             var companyId = document.getElementById('company').value;
             var year = document.getElementById('year').value;
-    
+
             if (companyId === '') {
                 // Handle case where no company is selected
                 alert('Please select a company.');
                 return;
             }
-    
+
             if (action === 'show') {
                 // Redirect to showBpjs route
-                window.location.href = "{{ url('reportSalary') }}/" + companyId +'/'+year;
-            
+                window.location.href = "{{ url('reportPph21') }}/" + companyId +'/'+year;
+
             }
         }
     </script>
 
     <script>
         function exportExcel(){
-           // var form = document.getElementById('bpjsForm');
-               // var year = document.getElementById('year').value;
+            var form = document.getElementById('pphForm');
+            var companyId = document.getElementById('company').value;
+                var year = document.getElementById('year').value;
 
-                window.location.href = "{{url('exportpph21bulanan')}}";
+                window.location.href = "/exportpph21tahun/" + companyId +'/'+year;
             }
     </script>
 @endsection

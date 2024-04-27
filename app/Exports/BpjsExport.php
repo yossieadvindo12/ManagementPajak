@@ -1,5 +1,5 @@
 <?php
- 
+
 namespace App\Exports;
 
 use App\Models\Bpjs;
@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 class BpjsExport implements FromCollection, WithHeadings
 {
     protected $data;
-    
+
     public function __construct($data)
     {
         $this->data = $data;
