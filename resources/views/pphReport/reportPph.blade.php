@@ -109,6 +109,7 @@
             var companyId = document.getElementById('company').value;
             var year = document.getElementById('year').value;
 
+
             if (companyId === '') {
                 // Handle case where no company is selected
                 alert('Please select a company.');
@@ -117,7 +118,7 @@
 
             if (action === 'show') {
                 // Redirect to showBpjs route
-                window.location.href = "{{ url('reportPph21') }}/" + companyId +'/'+year;
+                window.location.href = "{{ url('reportPph') }}/" + companyId +'/'+year;
 
             }
         }

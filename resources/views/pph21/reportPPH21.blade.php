@@ -5,7 +5,7 @@
 @section('content')
     <div class="m-4  ">
         <h1 class="text-center">Laporan PPH21</h1>
-        <form id="bpjsForm" action="#" method="POST">
+        <form id="pphForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->
             <div class="d-flex justify-content-between p-3">
@@ -37,12 +37,25 @@
                             <option value="12">Desember</option>
                         </select>
                     </div>
+                    <div class="form-group ml-3">
+                        <label for="DateReport"><strong>Tahun: </strong></label>
+                        <select id="year" class="form-control" name="year">
+                            <option value="{{ date('Y',strtotime('- 2 year')) }}">{{ date('Y',strtotime('- 2 year')) }}</option>
+                            <option value="{{ date('Y',strtotime('- 1 year')) }}">{{ date('Y',strtotime('- 1 year')) }}</option>
+                            <option value="{{ date('Y') }}" selected>{{ date('Y') }}</option>
+                            <option value="{{ date('Y',strtotime('+ 1 year')) }}">{{ date('Y',strtotime('+ 1 year')) }}</option>
+                            <option value="{{ date('Y',strtotime('+ 2 year')) }}">{{ date('Y',strtotime('+ 2 year')) }}</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="d-flex">
                     <button type="button" class="mt-4 btn btn-success" onclick="submitForm('show')">Cari</button>
                 </div>
             </div>
             <!-- Other form fields -->
+            <div class="d-flex">
+                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">export</button>
+            </div>
         </form>
 
 
@@ -105,9 +118,10 @@
     </div>
     <script>
         function submitForm(action) {
-            var form = document.getElementById('bpjsForm');
+            var form = document.getElementById('pphForm');
             var companyId = document.getElementById('company').value;
             var monthnum = document.getElementById('month').value;
+            var yearnum = document.getElementById('year').value;
             if (companyId === '') {
                 // Handle case where no company is selected
                 alert('Please select a company.');
@@ -116,9 +130,20 @@
 
             if (action === 'show') {
                 // Redirect to showBpjs route
-                window.location.href = "{{ url('reportPph') }}/" + companyId +'/'+ monthnum ;
+                window.location.href = "{{ url('reportPph') }}/" + companyId +'/'+ monthnum +'/'+ yearnum ;
 
             }
+        }
+    </script>
+
+    <script>
+    function exportExcel(){
+        var form = document.getElementById('pphForm');
+        var companyId = document.getElementById('company').value;
+            var monthnum = document.getElementById('month').value;
+            var yearnum = document.getElementById('year').value;
+
+            window.location.href = "/exportpph21bulan/" + companyId +'/'+ monthnum +'/'+ yearnum;
         }
     </script>
 @endsection

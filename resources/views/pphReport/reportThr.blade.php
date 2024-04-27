@@ -5,7 +5,7 @@
 @section('content')
     <div class="m-4  ">
         <h1 class="text-center">Laporan THR</h1>
-        <form id="bpjsForm" action="#" method="POST">
+        <form id="THRForm" action="#" method="POST">
             @csrf
             <!-- Other form fields -->
             <div class="d-flex justify-content-between mb-5">
@@ -105,7 +105,7 @@
     </div>
     <script>
         function submitForm(action) {
-            var form = document.getElementById('bpjsForm');
+            var form = document.getElementById('THRForm');
             var companyId = document.getElementById('company').value;
             var year = document.getElementById('year').value;
     
@@ -125,10 +125,11 @@
 
     <script>
         function exportExcel(){
-            var form = document.getElementById('bpjsForm');
+            var form = document.getElementById('THRForm');
+            var companyId = document.getElementById('company').value;
                 var year = document.getElementById('year').value;
 
-                window.location.href = "{{url('reportBpjs')}}/export_excel/";
+                window.location.href = "/exportreportthr/" + companyId +'/'+year;
             }
     </script>
 @endsection

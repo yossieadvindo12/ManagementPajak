@@ -58,7 +58,7 @@ class PphReportController extends Controller
         return Excel::download(new PphExport($data), 'pph21tahunan.xlsx');
     }
 
-    public function exportThr($id_company, $year)
+    public function exportPPHThr($id_company, $year)
     {
         $data = phh21::query()->select(
             'emp.nama',
@@ -102,6 +102,53 @@ class PphReportController extends Controller
         ->get();
 
         return Excel::download(new PphExport($data), 'pph21THR.xlsx');
+    }
+
+    public function exportThr($id_company, $year)
+    {
+        $data = phh21::query()->select(
+            'emp.nama',
+            'emp.nik',
+            'emp.npwp',
+            'c.name_company',
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 1 THEN ps.thr ELSE 0 END),0) AS JANUARY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 2 THEN ps.thr ELSE 0 END),0) AS FEBRUARY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 3 THEN ps.thr ELSE 0 END),0) AS MARCH'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 4 THEN ps.thr ELSE 0 END),0) AS APRIL'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 5 THEN ps.thr ELSE 0 END),0) AS MAY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 6 THEN ps.thr ELSE 0 END),0) AS JUNE'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 7 THEN ps.thr ELSE 0 END),0) AS JULY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 8 THEN ps.thr ELSE 0 END),0) AS AUGUST'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 9 THEN ps.thr ELSE 0 END),0) AS SEPTEMBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 10 THEN ps.thr ELSE 0 END),0) AS OCTOBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 11 THEN ps.thr ELSE 0 END),0) AS NOVEMBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 12 THEN ps.thr ELSE 0 END),0) AS DECEMBER'),
+            \DB::raw('
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 1 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 2 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 3 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 4 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 5 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 6 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 7 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 8 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 9 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 10 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 11 THEN ps.thr ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(ps.updated_at) = 12 THEN ps.thr ELSE 0 END),0)
+            AS total')
+        )
+        ->from('employee AS emp')
+        ->leftJoin('phh21s AS ps', 'emp.id', '=', 'ps.id_employee')
+        ->leftJoin('company AS c', 'emp.id_company', '=', 'c.id_company')
+        ->whereYear('ps.updated_at', '=', $year)
+        ->where('ps.keterangan_pph', 'reportThr')
+        ->where('emp.id_company', '=', $id_company)
+        ->groupBy('emp.nama', 'emp.nik', 'emp.npwp', 'c.name_company')
+        ->get();
+
+        dd($data);
+        // return Excel::download(new PphExport($data), 'reportTHR.xlsx');
     }
 
     public function index()
@@ -154,7 +201,7 @@ class PphReportController extends Controller
 
         }
 
-        public function reportShow($id_company,$year)
+    public function reportShow($id_company,$year)
     {
         //
         $sql = "SELECT

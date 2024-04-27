@@ -126,7 +126,8 @@
     <script>
         function exportExcel(){
             var form = document.getElementById('thrForm');
-                var year = document.getElementById('year').value;
+            var companyId = document.getElementById('company').value;
+            var year = document.getElementById('year').value;
 
                 window.location.href = "/exportpphthr/" + companyId +'/'+year;
             }
