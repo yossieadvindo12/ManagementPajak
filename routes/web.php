@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/extract-text', [OCRcontroller::class,'extractText']);
     Route::post('/storeEmployee', [EmployeeController::class,'store']);
     Route::get('/showEmployee/{id_company}', [EmployeeController::class,'show'])->name('showEmployee');
-    Route::get('/employee/export_excel', [EmployeeController::class,'export_excel'])->name('export_excel');
+    Route::get('/export_employee/{id_company}', [EmployeeController::class,'export_employee'])->name('export_employee');
     Route::post('/employee/import_excel', [EmployeeController::class,'import_excel'])->name('import_excel');
     Route::get('/employee/{item}/edit', [EmployeeController::class,'edit'])->name('employee.edit');
     Route::put('/employee/{id_employee}',  [EmployeeController::class,'update'])->name('employee.update');
@@ -63,7 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/reportPph',[Phh21Controller::class,'reportIndex'])->name('reportPph');
     Route::post('/storePph', [Phh21Controller::class,'store'])->name('storePph');
     Route::get('/showPph/{id_company}/{monthnum}/{keterangan_pph}', [Phh21Controller::class,'insertShow'])->name('showPph');
-    Route::get('/reportPph/{id_company}/{monthnum}', [Phh21Controller::class,'reportShow'])->name('reportPph');
+    Route::get('/reportPph/{id_company}/{monthnum}/{yearnum}', [Phh21Controller::class,'reportShow'])->name('reportPph');
 
     //Company
     Route::get('/company', [CompanyController::class,'index'])->name('company.view');
@@ -86,8 +86,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/reportTHR/{id_company}/{year}', [PphReportController::class,'reportTHRShow'])->name('reportTHR');
 
     //Export
+    Route::get('/exportpph21bulan/{id_company}/{month}/{year}',[Phh21Controller::class,'exportPPH'])->name('exportpph21bulan');
     Route::get('/exportpph21tahun/{id_company}/{year}',[PphReportController::class,'exportPphYearly'])->name('exportpph21tahun');
-    Route::get('/exportpphthr/{id_company}/{year}',[PphReportController::class,'exportThr'])->name('exportpphthr');
+    Route::get('/exportpphthr/{id_company}/{year}',[PphReportController::class,'exportPPHThr'])->name('exportpphthr');
+    Route::get('/exportreportthr/{id_company}/{year}',[PphReportController::class,'exportThr'])->name('exportreportthr');
     Route::get('/exportreporta1/{id_company}/{year}', [SalaryController::class, 'exportA1'])->name('export.a1');
     Route::get('/exportreporta5/{id_company}/{year}', [BPJSController::class, 'exportA5'])->name('export.a5');
     Route::get('/exportreporta10/{id_company}/{year}', [BPJSController::class, 'exportA10'])->name('export.a10');

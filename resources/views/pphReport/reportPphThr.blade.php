@@ -45,7 +45,7 @@
                 </select>
             </div> --}}
             <div class="d-flex">
-                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">export</button>
+                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">Export</button>
             </div>
             </form>
 
@@ -126,7 +126,8 @@
     <script>
         function exportExcel(){
             var form = document.getElementById('thrForm');
-                var year = document.getElementById('year').value;
+            var companyId = document.getElementById('company').value;
+            var year = document.getElementById('year').value;
 
                 window.location.href = "/exportpphthr/" + companyId +'/'+year;
             }

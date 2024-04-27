@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\phh21;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use App\Exports\PphExportBulanan;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Phh21Controller extends Controller
 {
@@ -1314,7 +1316,7 @@ class Phh21Controller extends Controller
         FROM phh21s 
         LEFT JOIN company AS c ON phh21s.id_company = c.id_company
         left Join employee as emp on phh21s.id_employee = emp.id
-        WHERE emp.id_company = :id_company and MONTH(phh21s.updated_at) = :monthnum and keterangan_pph= :keterangan_pph";
+        WHERE emp.id_company = :id_company and MONTH(phh21s.updated_at) = :monthnum and keterangan_pph= :keterangan_pph ";
 
         $dataPPH21 = DB::select($sql, ['id_company' => $id_company,'monthnum'=> $monthnum, 'keterangan_pph' => $keterangan_pph]);
         $dataPerusahaan = Company::all();
@@ -1322,7 +1324,7 @@ class Phh21Controller extends Controller
         return view('pph21.pph21', compact('dataPPH21','dataPerusahaan'));
     }
 
-    public function reportShow($id_company, $monthnum)
+    public function reportShow($id_company, $monthnum, $yearnum)
     {
         //
         $sql = "SELECT 
@@ -1348,9 +1350,9 @@ class Phh21Controller extends Controller
         FROM phh21s 
         LEFT JOIN company AS c ON phh21s.id_company = c.id_company
         left Join employee as emp on phh21s.id_employee = emp.id
-        WHERE emp.id_company = :id_company and MONTH(phh21s.updated_at) = :monthnum";
+        WHERE emp.id_company = :id_company and MONTH(phh21s.updated_at) = :monthnum and YEAR(phh21s.updated_at)= :yearnum";
 
-        $dataPPH21 = DB::select($sql, ['id_company' => $id_company,'monthnum' => $monthnum]);
+        $dataPPH21 = DB::select($sql, ['id_company' => $id_company,'monthnum' => $monthnum,'yearnum'=>$yearnum]);
         $dataPerusahaan = Company::all();
         // Pass the data to the view to display
         return view('pph21.reportPph21', compact('dataPPH21','dataPerusahaan'));
@@ -1377,5 +1379,42 @@ class Phh21Controller extends Controller
     public function destroy(phh21 $phh21)
     {
         //
+    }
+
+
+    public function exportPPH($id_company,  $monthnum,$yearnum)
+    {
+        $data =  Phh21::query()
+            ->select(
+                'emp.id',
+                'emp.nama',
+                'emp.nik',
+                'emp.npwp',
+                'c.name_company',
+                'gaji_pokok',
+                'A5',
+                'sc',
+                'natura',
+                'thr',
+                'lain_lain',
+                'gaji_bruto',
+                \DB::raw('`Ter alias` as ter_alias'), 
+                'pph21',
+                'thp',
+                'gross_up',
+                'keterangan_pph',
+                \DB::raw('MONTHNAME(phh21s.updated_at) AS bulan'), 
+                \DB::raw('YEAR(phh21s.updated_at) AS year') 
+            )
+            ->from('phh21s')
+            ->leftJoin('company AS c', 'phh21s.id_company', '=', 'c.id_company')
+            ->leftJoin('employee AS emp', 'phh21s.id_employee', '=', 'emp.id')
+            ->whereMonth('phh21s.updated_at', '=',$monthnum)
+            ->whereYear('phh21s.updated_at', '=',$yearnum)
+            ->where('emp.id_company', '=', $id_company)
+            ->get();
+        
+                // dd($data);
+        return Excel::download(new PphExportBulanan($data), 'pph21Bulanan.xlsx');
     }
 }

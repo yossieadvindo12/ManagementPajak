@@ -41,10 +41,10 @@
             <!-- Other form fields -->
         </form>
 
-        <a href="/employee/export_excel" class="btn btn-success my-3" target="_blank">EXPORT EXCEL</a>
+         <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">Export Karyawan</button>
 
         <button type="button" class="btn btn-primary mr-5" data-toggle="modal" data-target="#importExcel">
-			IMPORT EXCEL
+			Import Karyawan
 		</button>
 
 
@@ -148,6 +148,15 @@
                 form.action = "{{ route('addEmployee') }}";
             }
         }
+    </script>
+
+    <script>
+        function exportExcel(){
+            var form = document.getElementById('searchForm');
+            var companyId = document.getElementById('company').value;
+
+                window.location.href = "/export_employee/" + companyId;
+            }
     </script>
 @endsection
 @endsection
