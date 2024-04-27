@@ -11,9 +11,16 @@ class EmployeeExport implements FromCollection,WithHeadings
     /**
     * @return \Illuminate\Support\Collection
     */
+     protected $data;
+
+    public function __construct($data)
+    {
+            $this->data = $data;
+    }
+
     public function collection()
     {
-        return Employee::all();
+            return $this->data;
     }
 
     public function headings(): array

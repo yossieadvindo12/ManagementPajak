@@ -349,7 +349,25 @@ class EmployeeController extends Controller
 
     public function export_excel()
 	{
-		return Excel::download(new EmployeeExport, 'employee.xlsx');
+        $data = Employee::query()->select(
+            DB::raw('emp.id as id_employee'),
+            'emp.nama',
+            'emp.nik',
+            'emp.npwp',
+            'sc',
+            'natura',
+            'bpjs_kesehatan',
+            'thr',
+            'lain_lain',
+            'gaji_pokok')
+            ->from('employee AS emp')
+            ->leftJoin('salaries AS s', 'emp.id', '=', 's.id_employee')
+            ->leftJoin('tunjangans AS t', 'emp.id', '=', 't.id_employee')
+            ->leftJoin('company AS c', 'emp.id_company', '=', 'c.id_company')
+            ->groupBy('emp.id',)
+            ->get();
+
+		return Excel::download(new EmployeeExport($data), 'employee.xlsx');
 	}
 
     public function import_excel(Request $request)
