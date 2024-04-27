@@ -347,7 +347,7 @@ class EmployeeController extends Controller
         //
     }
 
-    public function export_excel()
+    public function export_employee($company_id)
 	{
         $data = Employee::query()->select(
             DB::raw('emp.id as id_employee'),
@@ -364,6 +364,7 @@ class EmployeeController extends Controller
             ->leftJoin('salaries AS s', 'emp.id', '=', 's.id_employee')
             ->leftJoin('tunjangans AS t', 'emp.id', '=', 't.id_employee')
             ->leftJoin('company AS c', 'emp.id_company', '=', 'c.id_company')
+            ->where('emp.id_company', '=', $company_id)
             ->groupBy('emp.id',)
             ->get();
 

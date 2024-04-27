@@ -45,7 +45,7 @@
                 </select>
             </div> --}}
             <div class="d-flex">
-                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">export</button>
+                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">Export</button>
             </div>
             </form>
 

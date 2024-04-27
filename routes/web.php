@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/extract-text', [OCRcontroller::class,'extractText']);
     Route::post('/storeEmployee', [EmployeeController::class,'store']);
     Route::get('/showEmployee/{id_company}', [EmployeeController::class,'show'])->name('showEmployee');
-    Route::get('/employee/export_excel', [EmployeeController::class,'export_excel'])->name('export_excel');
+    Route::get('/export_employee/{id_company}', [EmployeeController::class,'export_employee'])->name('export_employee');
     Route::post('/employee/import_excel', [EmployeeController::class,'import_excel'])->name('import_excel');
     Route::get('/employee/{item}/edit', [EmployeeController::class,'edit'])->name('employee.edit');
     Route::put('/employee/{id_employee}',  [EmployeeController::class,'update'])->name('employee.update');

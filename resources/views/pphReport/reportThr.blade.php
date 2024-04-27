@@ -45,12 +45,12 @@
                 </select>
             </div> --}}
             <div class="d-flex">
-                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">export</button>
+                <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">Export</button>
             </div>
             </form>
-        
-        
-        
+
+
+
         <div class="row table-responsive">
             <table class="table">
                 <thead>
@@ -108,17 +108,17 @@
             var form = document.getElementById('THRForm');
             var companyId = document.getElementById('company').value;
             var year = document.getElementById('year').value;
-    
+
             if (companyId === '') {
                 // Handle case where no company is selected
                 alert('Please select a company.');
                 return;
             }
-    
+
             if (action === 'show') {
                 // Redirect to showBpjs route
                 window.location.href = "{{ url('reportTHR') }}/" + companyId +'/'+year;
-            
+
             }
         }
     </script>
