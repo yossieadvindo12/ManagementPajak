@@ -107,7 +107,7 @@ class Phh21Controller extends Controller
         ]);
 
         
-        DB::delete("DELETE FROM phh21s WHERE id_company= :id_company and MONTH(updated_at) = :month     and YEAR(updated_at)=YEAR(NOW() and keterangan_pph= :keterangan_pph)", 
+        DB::delete("DELETE FROM phh21s WHERE id_company= :id_company and MONTH(updated_at) = :month     and YEAR(updated_at)=YEAR(NOW()) and keterangan_pph= :keterangan_pph", 
         ['id_company' => $request->id_company, 'month' => $request->month,'keterangan_pph' => $request->keterangan_pph]);
         
         if($request->keterangan_pph != 'reportTHR'){
@@ -139,7 +139,7 @@ class Phh21Controller extends Controller
     b.jkm + b.jkk + b.bpjs_kesehatan AS a5,  
     t.sc,
     t.natura,
-    t.thr,
+    0 thr,
     t.lain_lain,
     s.gaji_pokok + b.jkm + b.jkk + b.bpjs_kesehatan + ifnull( t.sc,0) +ifnull( t.natura,0) +ifnull( t.lain_lain,0) as gaji_bruto,
 	ter.`Ter alias` ,

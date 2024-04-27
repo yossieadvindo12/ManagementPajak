@@ -83,7 +83,7 @@
         <li class="nav-item">
             <a class="nav-link" href="/reportSalary">
                 <i class="fas fa-fw fa fa-file-alt"></i>
-                <span>Laporan Gaji</span>
+                <span>Laporan Gaji A1</span>
             </a>
 
         </li>

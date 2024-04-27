@@ -126,9 +126,10 @@
     <script>
         function exportExcel(){
             var form = document.getElementById('bpjsForm');
+            var companyId = document.getElementById('company').value;
                 var year = document.getElementById('year').value;
 
-                window.location.href = "{{url('reportBpjs')}}/export_excel/";
+                window.location.href = "/exportreporta10/" + companyId +'/'+year;
             }
     </script>
 @endsection

@@ -362,62 +362,94 @@ class BPJSController extends Controller
         //
     }
 
-    public function export_excel(Request $request)
-	{
 
+    public function exportA5($id_company, $year) 
+    {
+        $data = BPJS::query()->select(
+            'emp.nama',
+            'emp.nik',
+            'emp.npwp',
+            'c.name_company',
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 1 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS JANUARY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 2 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS FEBRUARY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 3 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS MARCH'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 4 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS APRIL'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 5 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS MAY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 6 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS JUNE'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 7 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS JULY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 8 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS AUGUST'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 9 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS SEPTEMBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 10 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS OCTOBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 11 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS NOVEMBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 12 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0) AS DECEMBER'),
+            \DB::raw('
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 1 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 2 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 3 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 4 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 5 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 6 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 7 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 8 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 9 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 10 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 11 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 12 THEN bpjs.bpjs_kesehatan+bpjs.jkk+bpjs.jkm ELSE 0 END),0)
+            AS total')
+        )
+        ->from('bpjs AS bpjs')
+        ->leftJoin('company AS c', 'bpjs.id_company', '=', 'c.id_company')
+        ->leftJoin('employee AS emp', 'bpjs.id_employee', '=', 'emp.id')
+        ->whereYear('bpjs.updated_at', '=', $year)
+        ->where('emp.id_company', '=', $id_company)
+        ->groupBy('emp.nama', 'c.name_company', 'emp.nik', 'emp.npwp')
+        ->get();
 
-            $sql ="
-            SELECT
-                emp.nama,
-                c.name_company,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JANUARY' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS JANUARY,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'FEBRUARY' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS FEBRUARY,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MARCH' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS MARCH,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'APRIL' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS APRIL,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'MAY' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS MAY,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JUNE' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS JUNE,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'JULY' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS JULY,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'AUGUST' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS AUGUST,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'SEPTEMBER' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS SEPTEMBER,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'OCTOBER' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS OCTOBER,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'NOVEMBER' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS NOVEMBER,
-            MAX(CASE WHEN MONTHNAME(bpjs.updated_at) = 'DECEMBER' THEN bpjs.bpjs_kesehatan ELSE 0 END) AS DECEMBER
-                from bpjs
-                LEFT JOIN company AS c
-                        ON bpjs.id_company = c.id_company
-                left Join employee as emp
-                        on bpjs.nik = emp.nik
-                where year(bpjs.updated_at)=2024
-                group by emp.nama,c.name_company
-                    ";
+        return Excel::download(new BpjsExport($data), 'bpjsA5.xlsx');
+    }
 
+    public function exportA10($id_company, $year) 
+    {
+        $data = BPJS::query()->select(
+            'emp.nama',
+            'emp.nik',
+            'emp.npwp',
+            'c.name_company',
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 1 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS JANUARY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 2 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS FEBRUARY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 3 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS MARCH'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 4 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS APRIL'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 5 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS MAY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 6 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS JUNE'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 7 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS JULY'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 8 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS AUGUST'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 9 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS SEPTEMBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 10 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS OCTOBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 11 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS NOVEMBER'),
+            \DB::raw('COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 12 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0) AS DECEMBER'),
+            \DB::raw('
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 1 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 2 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 3 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 4 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 5 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 6 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 7 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 8 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 9 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 10 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 11 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)+
+            COALESCE(SUM(CASE WHEN MONTH(bpjs.updated_at) = 12 THEN bpjs.jht_karyawan+bpjs.jp_karyawan ELSE 0 END),0)
+            AS total')
+        )
+        ->from('bpjs AS bpjs')
+        ->leftJoin('company AS c', 'bpjs.id_company', '=', 'c.id_company')
+        ->leftJoin('employee AS emp', 'bpjs.id_employee', '=', 'emp.id')
+        ->whereYear('bpjs.updated_at', '=', $year)
+        ->where('emp.id_company', '=', $id_company)
+        ->groupBy('emp.nama', 'c.name_company', 'emp.nik', 'emp.npwp')
+        ->get();
 
-            $data = DB::select($sql);
-            $arrayData[] = array('nama','name_company'
-            ,'JANUARY','FEBRUARY','MARCH','APRIL'
-            ,'MAY','JUNE','JULY','AUGUST'
-            ,'SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER');
-
-            foreach($data as $report){
-                $arrayData[]=array(
-                    'Nama' => $report->nama,
-                    'Perusahaan' => $report->name_company,
-                    'JANUARY' => $report->JANUARY,
-                    'FEBRUARY' => $report->FEBRUARY,
-                    'MARCH' => $report->MARCH,
-                    'APRIL' => $report->APRIL,
-                    'MAY' => $report->MAY,
-                    'JUNE' => $report->JUNE,
-                    'JULY' => $report->JULY,
-                    'AUGUST' => $report->AUGUST,
-                    'SEPTEMBER' => $report->SEPTEMBER,
-                    'OCTOBER' => $report->OCTOBER,
-                    'NOVEMBER' => $report->NOVEMBER,
-                    'DECEMBER' => $report->DECEMBER
-                );
-            }
-
-
-		return Excel::download(new BpjsExport($data), 'bpjs.xlsx');
-	}
+        return Excel::download(new BpjsExport($data), 'bpjsA10.xlsx');
+    }
 }
