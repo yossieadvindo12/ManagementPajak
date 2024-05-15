@@ -147,8 +147,7 @@ class PphReportController extends Controller
         ->groupBy('emp.nama', 'emp.nik', 'emp.npwp', 'c.name_company')
         ->get();
 
-        dd($data);
-        // return Excel::download(new PphExport($data), 'reportTHR.xlsx');
+        return Excel::download(new PphExport($data), 'reportTHR.xlsx');
     }
 
     public function index()
