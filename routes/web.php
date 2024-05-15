@@ -88,6 +88,7 @@ Route::group(['middleware' => ['auth']], function () {
     //Export
     Route::get('/exportpph21bulan/{id_company}/{month}/{year}',[Phh21Controller::class,'exportPPH'])->name('exportpph21bulan');
     Route::get('/exportpph21tahun/{id_company}/{year}',[PphReportController::class,'exportPphYearly'])->name('exportpph21tahun');
+    
     Route::get('/exportpphthr/{id_company}/{year}',[PphReportController::class,'exportPPHThr'])->name('exportpphthr');
     Route::get('/exportreportthr/{id_company}/{year}',[PphReportController::class,'exportThr'])->name('exportreportthr');
     Route::get('/exportreporta1/{id_company}/{year}', [SalaryController::class, 'exportA1'])->name('export.a1');
