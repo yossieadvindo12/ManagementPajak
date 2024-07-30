@@ -16,7 +16,6 @@ return new class extends Migration
             $table->integer("min");
             $table->integer("max")->nullable();
             $table->double('presentase', 15, 4);
-            $table->double("presentase");
             $table->string("Ter");
             $table->string("Ter alias");
             $table->timestamps();
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ters');
+        Schema::dropIfExists('ter');
     }
 };
