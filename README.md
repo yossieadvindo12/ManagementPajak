@@ -7,6 +7,7 @@
 1.composer install </br>
 2.install https://github.com/UB-Mannheim/tesseract/wiki </br>
 3.install enviroment https://stackoverflow.com/questions/64199978/php-tesseract-error-the-command-tesseract-was-not-found </br>
+4. composer install --ignore-platform-reqs </br>
 5. php artisan migrate </br>
 6. php artisan db:seed --class=PtkpSeeders  </br>
 7. php artisan db:seed --class=SuperUserSeeders   </br>
