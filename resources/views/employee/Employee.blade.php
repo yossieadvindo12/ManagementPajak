@@ -41,10 +41,10 @@
             <!-- Other form fields -->
         </form>
 
-         <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">Export Karyawan</button>
+         <button type="button" class="m-2 btn btn-success" onclick="exportExcel()">Export Gaji & Tunjangan Karyawan</button>
 
         <button type="button" class="btn btn-primary mr-5" data-toggle="modal" data-target="#importExcel">
-			Import Karyawan
+			Import Gaji & Tunjangan  Karyawan
 		</button>
 
 
