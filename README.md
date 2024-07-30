@@ -9,7 +9,7 @@
 3.install enviroment https://stackoverflow.com/questions/64199978/php-tesseract-error-the-command-tesseract-was-not-found </br>
 4. composer install --ignore-platform-reqs </br>
 5. php artisan migrate </br>
-6. php artisan db:seed --class=PtkpSeeders  </br>
+6. php artisan db:seed --class=PtkpSeeder  </br>
 7. php artisan db:seed --class=SuperUserSeeders   </br>
 8. php artisan serve </br>
 </p>    
